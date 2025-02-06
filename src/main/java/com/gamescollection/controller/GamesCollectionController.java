@@ -1,4 +1,4 @@
-package com.ficticius.blog.controller;
+package com.gamescollection.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/blogs")
-public class BlogController {
+public class GamesCollectionController {
 
     // Endpoint para leer un blog por su ID
     @GetMapping("/readBlog/{id}")

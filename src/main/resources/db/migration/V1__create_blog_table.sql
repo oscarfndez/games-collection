@@ -1,5 +1,5 @@
-CREATE TABLE blog (
+CREATE TABLE game (
                       id UUID PRIMARY KEY,
-                      title VARCHAR(255) NOT NULL,
-                      content TEXT NOT NULL
+                      title VARCHAR(256) NOT NULL,
+                      description VARCHAR(2048) NOT NULL
 );

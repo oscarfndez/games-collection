@@ -8,11 +8,11 @@
         <version>3.4.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.ficticius</groupId>
-    <artifactId>ficticius-blog</artifactId>
+    <groupId>com.gamescollection</groupId>
+    <artifactId>games-collection</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ficticius-blog</name>
-    <description>ficticius-blog</description>
+    <name>games-collection</name>
+    <description>Games collection</description>
     <url/>
     <licenses>
         <license/>
@@ -75,23 +75,19 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
+            <version>1.20.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

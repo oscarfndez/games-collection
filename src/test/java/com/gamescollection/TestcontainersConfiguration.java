@@ -1,4 +1,4 @@
-package com.ficticius.blog;
+package com.gamescollection;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

@@ -1,13 +1,13 @@
-package com.ficticius.blog;
+package com.gamescollection;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FicticiusBlogApplication {
+public class GamesCollectionApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FicticiusBlogApplication.class, args);
+        SpringApplication.run(GamesCollectionApplication.class, args);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ficticius.blog.controller;
+package com.gamescollection.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 @Testcontainers
 @DataJpaTest
-public class BlogControllerIntegrationTest {
+public class GamesCollectionControllerIntegrationTest {
 
     @Container
     public static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16")
@@ -47,7 +47,6 @@ public class BlogControllerIntegrationTest {
     @Test
     public void testReadBlog() {
 
-        int i = 0;
 
     }
 }
