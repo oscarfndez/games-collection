@@ -1,1 +1,1 @@
-# ficticius-blog
+# games-collection
