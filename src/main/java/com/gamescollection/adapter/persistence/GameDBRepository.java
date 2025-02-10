@@ -17,14 +17,10 @@ public class GameDBRepository implements GameRepository {
     }
 
     public GameEntity modelToEntity(Game game) {
-        return new GameEntity(game.id(), game.name(), game.description());
+        return new GameEntity(game.getId(), game.getName(), game.getDescription());
     }
 
     public Game entityToModel(GameEntity gameEntity) {
         return new Game(gameEntity.getId(), gameEntity.getName(), gameEntity.getDescription());
     }
-
-
-
-
 }

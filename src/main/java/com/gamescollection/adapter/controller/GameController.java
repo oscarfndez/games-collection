@@ -1,11 +1,9 @@
-package com.gamescollection.controller;
+package com.gamescollection.adapter.controller;
 
 import com.gamescollection.core.model.Game;
 import com.gamescollection.core.port.GameService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/game")
@@ -16,11 +14,14 @@ public class GameController {
 
     @PostMapping
     public GameDTO createGame(GameDTO gameDTO) {
-        return mapToDTO(gameService.createGame(gameDTO.name(), gameDTO.description()));
+        return mapToDTO(gameService.createGame(gameDTO.getName(), gameDTO.getDescription()));
     }
 
     private GameDTO mapToDTO(Game game) {
-        return new GameDTO(game.id(),  game.name(), game.description());
+        return GameDTO.builder().id(game.getId())
+                .name(game.getName())
+                .description(game.getDescription())
+                .build();
     }
 
 }
