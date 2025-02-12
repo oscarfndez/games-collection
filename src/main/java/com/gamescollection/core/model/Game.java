@@ -13,4 +13,5 @@ public class Game {
     private UUID id;
     private String name;
     private String description;
+    private Platform platform;
 }
