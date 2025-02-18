@@ -1,6 +1,6 @@
 package com.oscarfndez.gamescollection.adapters.persistence.entities.mappers;
 
-import com.oscarfndez.framework.adapters.persistence.ModelEntityMapper;
+import com.oscarfndez.framework.adapters.persistence.mappers.ModelEntityMapper;
 import com.oscarfndez.gamescollection.adapters.persistence.entities.GameEntity;
 import com.oscarfndez.gamescollection.core.model.Game;
 import lombok.RequiredArgsConstructor;

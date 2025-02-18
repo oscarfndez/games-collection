@@ -6,11 +6,26 @@ import org.springframework.http.MediaType;
 
 import java.util.UUID;
 
+import static com.oscarfndez.gamescollection.testutils.TestDataConstants.RAYMAN_LEGENDS_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RestIntegrationTest extends IntegrationTest {
+
+    @Test
+    public void when_retrievingAnExistingGameButNoUserIsLoggedThenForbiddenIsReturned() throws Exception {
+
+        // Given an existing Game
+        // When performing a GET http request by id
+        // And the request is performed with no logged in user
+        // then the Forbidded is returned in the response status
+        this.mockMvc.perform(get("/api/game?id="+ RAYMAN_LEGENDS_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
 
     @Test
     public void when_retrievingAnUnexistingResourceNotFoundIsReturned() throws Exception {

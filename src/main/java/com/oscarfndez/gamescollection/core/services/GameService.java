@@ -1,6 +1,6 @@
 package com.oscarfndez.gamescollection.core.services;
 
-import com.oscarfndez.framework.adapters.persistence.HexagonalRepository;
+import com.oscarfndez.framework.adapters.persistence.mappers.HexagonalRepository;
 import com.oscarfndez.gamescollection.adapters.persistence.entities.GameEntity;
 import com.oscarfndez.gamescollection.adapters.persistence.entities.PlatformEntity;
 import com.oscarfndez.gamescollection.core.model.Game;

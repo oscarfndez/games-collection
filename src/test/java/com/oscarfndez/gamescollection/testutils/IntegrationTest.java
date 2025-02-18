@@ -1,14 +1,21 @@
 package com.oscarfndez.gamescollection.testutils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oscarfndez.framework.core.model.auth.Role;
+import com.oscarfndez.framework.core.model.auth.User;
+import com.oscarfndez.framework.adapters.persistence.auth.UserRepository;
+import com.oscarfndez.framework.core.services.auth.impl.JwtServiceImpl;
 import com.oscarfndez.gamescollection.adapters.persistence.GameJpaRepository;
 import com.oscarfndez.gamescollection.adapters.persistence.PlatformJpaRepository;
+import com.oscarfndez.gamescollection.config.JwtAuthenticationFilter;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -26,6 +33,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ExtendWith(SpringExtension.class)
 public class IntegrationTest {
 
+    public static final String FIRST_NAME = "Alan";
+    public static final String LAST_NAME = "Turing";
+    public static final String PASSWORD = "enigma";
+    public static final String TOKEN_HEADER_NAME = "Authorization";
+
     @Autowired
     protected WebApplicationContext webApplicationContext;
 
@@ -33,8 +45,20 @@ public class IntegrationTest {
     protected PlatformJpaRepository platformJpaRepository;
 
     @Autowired
-    protected GameJpaRepository gameJpaRepository
-            ;
+    protected GameJpaRepository gameJpaRepository;
+
+    @Autowired
+    private JwtServiceImpl jwtService;
+
+    @Autowired
+    protected UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
     protected MockMvc mockMvc;
     protected ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,9 +80,8 @@ public class IntegrationTest {
     @BeforeEach
     public void setUp() {
 
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).addFilter(jwtAuthenticationFilter).build();
 
-        // Ejecutar Flyway para gestionar migraciones de base de datos
         Flyway flyway = Flyway.configure()
                 .dataSource(postgreSQLContainer.getJdbcUrl(), postgreSQLContainer.getUsername(), postgreSQLContainer.getPassword())
                 .load();
@@ -71,4 +94,16 @@ public class IntegrationTest {
     }
 
 
+    protected User createUser(final String email, Role role) {
+        var user = User.builder().firstName(FIRST_NAME).lastName(LAST_NAME)
+                .email(email).password(passwordEncoder.encode(PASSWORD))
+                .role(role).build();
+        return userRepository.saveAndFlush(user);
+    }
+
+    protected HttpHeaders buildHeaders(User user) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(TOKEN_HEADER_NAME, jwtService.generateToken(user));
+        return httpHeaders;
+    }
 }

@@ -6,6 +6,9 @@ import com.oscarfndez.gamescollection.core.services.PlatformService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
+@PreAuthorize("@authorizationService.hasRole('ADMIN')")
 public class PlatformController {
 
     private final PlatformModelDtoMapper platformModelDtoMapper;
@@ -21,6 +25,7 @@ public class PlatformController {
 
     @GetMapping("/api/platform")
     public ResponseEntity<PlatformDto> loadPlatform(@RequestParam final UUID id) {
+
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.retrieveOne(id))
                 , HttpStatus.OK);
@@ -42,6 +47,7 @@ public class PlatformController {
 
     @PutMapping("/api/platform")
     public ResponseEntity<PlatformDto> updatePlatform(@RequestParam final UUID id, @RequestBody PlatformDto platformDto) {
+        UserDetails loggedInUser = (UserDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription())
                 ), HttpStatus.CREATED);

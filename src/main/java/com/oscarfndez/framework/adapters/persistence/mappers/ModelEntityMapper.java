@@ -1,4 +1,4 @@
-package com.oscarfndez.framework.adapters.persistence;
+package com.oscarfndez.framework.adapters.persistence.mappers;
 
 public interface ModelEntityMapper <M, E> {
 

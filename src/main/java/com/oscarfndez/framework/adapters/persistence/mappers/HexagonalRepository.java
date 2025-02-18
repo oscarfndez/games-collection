@@ -1,4 +1,4 @@
-package com.oscarfndez.framework.adapters.persistence;
+package com.oscarfndez.framework.adapters.persistence.mappers;
 
 import com.oscarfndez.gamescollection.adapters.persistence.exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
