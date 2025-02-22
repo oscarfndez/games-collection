@@ -1,7 +1,6 @@
 package com.oscarfndez.gamescollection.adapters.rest.controllers;
 
 import com.oscarfndez.gamescollection.adapters.rest.dtos.GameDto;
-import com.oscarfndez.gamescollection.adapters.rest.dtos.PlatformDto;
 import com.oscarfndez.gamescollection.adapters.rest.dtos.mappers.GameModelDtoMapper;
 import com.oscarfndez.gamescollection.core.services.GameService;
 import lombok.AllArgsConstructor;
