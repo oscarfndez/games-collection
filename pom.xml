@@ -198,6 +198,60 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.jkube</groupId>
+                <artifactId>kubernetes-maven-plugin</artifactId>
+                <version>1.18.1</version>
+                <configuration>
+                    <imagePullPolicy>Always</imagePullPolicy>
+                    <resources>
+                        <labels>
+                            <all>
+                                <group>${project.groupId}</group>
+                                <app>${project.artifactId}</app>
+                                <version>${project.version}</version>
+                                <provider>fabric8</provider>
+                                <owner>oscarfndez</owner>
+                            </all>
+                            <service>
+                                <owner>oscarfndez</owner>
+                            </service>
+                        </labels>
+                    </resources>
+
+                    <images>
+                        <image>
+                            <name>oscarfndez/%a:%t</name>
+                            <alias>${project.artifactId}</alias>
+                            <build>
+                                <from>library/eclipse-temurin:17.0.5_8-jdk-jammy</from>
+                                <assembly>
+                                    <targetDir>/deployments</targetDir>
+                                </assembly>
+                                <env>
+                                    <JAVA_APP_DIR>/deployments</JAVA_APP_DIR>
+                                </env>
+                                <ports>
+                                    <port>8080</port>
+                                    <port>8778</port>
+                                    <port>9779</port>
+                                </ports>
+                                <cmd>java -jar /deployments/${project.artifactId}-${project.version}.jar</cmd>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resource</goal>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

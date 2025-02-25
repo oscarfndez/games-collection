@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +45,6 @@ public class PlatformController {
 
     @PutMapping("/api/platform")
     public ResponseEntity<PlatformDto> updatePlatform(@RequestParam final UUID id, @RequestBody PlatformDto platformDto) {
-        UserDetails loggedInUser = (UserDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription())
                 ), HttpStatus.CREATED);
