@@ -12,11 +12,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled
 public class RestIntegrationTest extends IntegrationTest {
 
     @Test
-    @Disabled
     public void when_retrievingAnExistingGameButNoUserIsLoggedThenForbiddenIsReturned() throws Exception {
 
         // Given an existing Game
@@ -31,7 +29,6 @@ public class RestIntegrationTest extends IntegrationTest {
 
 
     @Test
-    @Disabled
     public void when_retrievingAnUnexistingResourceNotFoundIsReturned() throws Exception {
 
         basePath = "/api/platform";
