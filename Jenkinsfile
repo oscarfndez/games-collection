@@ -1,12 +1,22 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.9-eclipse-temurin-21'
-            args '-v $HOME/.m2:/root/.m2'
-        }
-    }
+    agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verificar entorno') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'java -version || true'
+                sh 'mvn -version || true'
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'mvn -B clean package'
