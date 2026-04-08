@@ -35,3 +35,4 @@ public class PlatformService {
          platformRepository.deleteOne(id);
     }
 }
+
