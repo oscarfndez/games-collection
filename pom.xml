@@ -203,8 +203,13 @@
                 <groupId>org.eclipse.jkube</groupId>
                 <artifactId>kubernetes-maven-plugin</artifactId>
                 <version>1.18.1</version>
+
                 <configuration>
                     <imagePullPolicy>Always</imagePullPolicy>
+                    <authConfig>
+                        <username>oscarfndez</username>
+                        <password>ferfer74!</password>
+                    </authConfig>
                     <resources>
                         <labels>
                             <all>
