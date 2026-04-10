@@ -229,21 +229,6 @@
                         <image>
                             <name>oscarfndez/%a:%t</name>
                             <alias>${project.artifactId}</alias>
-                            <build>
-                                <from>library/eclipse-temurin:17.0.5_8-jdk-jammy</from>
-                                <assembly>
-                                    <targetDir>/deployments</targetDir>
-                                </assembly>
-                                <env>
-                                    <JAVA_APP_DIR>/deployments</JAVA_APP_DIR>
-                                </env>
-                                <ports>
-                                    <port>8080</port>
-                                    <port>8778</port>
-                                    <port>9779</port>
-                                </ports>
-                                <cmd>java -jar /deployments/${project.artifactId}-${project.version}.jar</cmd>
-                            </build>
                         </image>
                     </images>
                 </configuration>

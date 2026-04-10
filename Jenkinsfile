@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                sh 'mvn -B clean verify'
+                sh 'mvn -B clean verify -Djkube.skip=true'
             }
         }
 
@@ -23,6 +23,8 @@ pipeline {
                 )]) {
                     sh '''
                       mvn -B jib:build \
+                        -DskipTests \
+                        -Djkube.skip=true \
                         -Djib.to.auth.username=$DOCKERHUB_USERNAME \
                         -Djib.to.auth.password=$DOCKERHUB_PASSWORD
                     '''
