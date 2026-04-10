@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'oscarfndez/games-collection'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -25,8 +30,23 @@ pipeline {
                       mvn -B jib:build \
                         -DskipTests \
                         -Djkube.skip=true \
+                        -Djib.to.image=${IMAGE_NAME}:${IMAGE_TAG} \
                         -Djib.to.auth.username=$DOCKERHUB_USERNAME \
                         -Djib.to.auth.password=$DOCKERHUB_PASSWORD
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to dev') {
+            steps {
+                withCredentials([file(credentialsId: 'kubeconfig-dev', variable: 'KUBECONFIG_FILE')]) {
+                    sh '''
+                      export KUBECONFIG=$KUBECONFIG_FILE
+                      kubectl set image deployment/games-collection \
+                        games-collection=${IMAGE_NAME}:${IMAGE_TAG} \
+                        -n dev
+                      kubectl rollout status deployment/games-collection -n dev
                     '''
                 }
             }
