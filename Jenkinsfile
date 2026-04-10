@@ -8,9 +8,25 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
-                sh 'mvn -B clean package'
+                sh 'mvn -B clean verify'
+            }
+        }
+
+        stage('Publish to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKERHUB_USERNAME',
+                    passwordVariable: 'DOCKERHUB_PASSWORD'
+                )]) {
+                    sh '''
+                      mvn -B jib:build \
+                        -Djib.to.auth.username=$DOCKERHUB_USERNAME \
+                        -Djib.to.auth.password=$DOCKERHUB_PASSWORD
+                    '''
+                }
             }
         }
     }
