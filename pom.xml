@@ -273,6 +273,7 @@
                             <port>8080</port>
                         </ports>
                     </container>
+                    <format>Docker</format>
                 </configuration>
             </plugin>
         </plugins>
