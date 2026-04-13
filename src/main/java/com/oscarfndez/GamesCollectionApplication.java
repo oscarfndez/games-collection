@@ -14,4 +14,3 @@ public class GamesCollectionApplication {
         SpringApplication.run(GamesCollectionApplication.class, args);
     }
 }
-
