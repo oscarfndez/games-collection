@@ -23,4 +23,6 @@ public class GameDto {
     private String description;
     @JsonProperty("platform_id")
     private UUID platformId;
+    @JsonProperty("platform_name")
+    private String platformName;
 }

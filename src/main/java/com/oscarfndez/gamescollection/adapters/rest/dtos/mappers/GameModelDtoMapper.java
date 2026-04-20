@@ -13,6 +13,7 @@ public class GameModelDtoMapper implements ModelDtoMapper<Game, GameDto> {
                 .name(game.getName())
                 .description(game.getDescription())
                 .platformId(game.getPlatform().getId())
+                .platformName(game.getPlatform().getName())
                 .build();
     }
 }
