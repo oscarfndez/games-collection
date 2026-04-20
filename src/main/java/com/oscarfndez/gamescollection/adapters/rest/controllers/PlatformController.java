@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
-@PreAuthorize("@authorizationService.hasRole('ADMIN')")
+@PreAuthorize("@authorizationService.hasRole('USER')")
 public class PlatformController {
 
     private final PlatformModelDtoMapper platformModelDtoMapper;
