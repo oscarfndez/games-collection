@@ -1,9 +1,12 @@
 package com.oscarfndez.gamescollection.adapters.rest.controllers;
 
+import com.oscarfndez.framework.core.model.dto.PageResponseDto;
 import com.oscarfndez.gamescollection.adapters.rest.dtos.GameDto;
 import com.oscarfndez.gamescollection.adapters.rest.dtos.mappers.GameModelDtoMapper;
+import com.oscarfndez.gamescollection.core.model.Game;
 import com.oscarfndez.gamescollection.core.services.GameService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,17 +34,28 @@ public class GameController {
     }
 
     @GetMapping("/api/game/all")
-    public ResponseEntity<List<GameDto>> loadAllGames(
+    public ResponseEntity<PageResponseDto<GameDto>> loadAllGames(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "name") final String sortField,
-            @RequestParam(required = false, defaultValue = "asc") final String sortDir
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir,
+            @RequestParam(required = false, defaultValue = "0") final int page,
+            @RequestParam(required = false, defaultValue = "10") final int size
     ) {
-        return new ResponseEntity<>(
-                gameService.retrieveAny(search, sortField, sortDir)
-                        .stream()
-                        .map(gameModelDtoMapper::mapToDTO)
-                        .collect(Collectors.toList()),
-                HttpStatus.OK
+        Page<Game> resultPage = gameService.retrievePage(search, sortField, sortDir, page, size);
+
+        List<GameDto> content = resultPage.getContent()
+                .stream()
+                .map(gameModelDtoMapper::mapToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(
+                new PageResponseDto<>(
+                        content,
+                        resultPage.getNumber(),
+                        resultPage.getSize(),
+                        resultPage.getTotalElements(),
+                        resultPage.getTotalPages()
+                )
         );
     }
 

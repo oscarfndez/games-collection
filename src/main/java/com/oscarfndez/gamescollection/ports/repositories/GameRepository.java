@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Component
 public class GameRepository extends HexagonalRepository<Game, GameEntity> {
@@ -30,6 +31,13 @@ public class GameRepository extends HexagonalRepository<Game, GameEntity> {
                 .stream()
                 .map(modelEntityMapper::entityToModel)
                 .toList();
+    }
+
+
+    public Page<Game> search(String search, Pageable pageable) {
+        return gameJpaRepository.search(search, pageable)
+                .map(modelEntityMapper::entityToModel);
+
     }
 
     public List<Game> findAllSorted(String sortField, boolean asc) {

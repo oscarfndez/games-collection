@@ -7,6 +7,10 @@ import com.oscarfndez.gamescollection.core.model.Game;
 import com.oscarfndez.gamescollection.core.model.Platform;
 import com.oscarfndez.gamescollection.ports.repositories.GameRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,6 +51,15 @@ public class GameService {
         return gameRepository.searchAndSort(search.trim(), field, asc);
     }
 
+    public Page<Game> retrievePage(String search, String sortField, String sortDir, int page, int size) {
+        String mappedSortField = mapSortField(sortField);
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, mappedSortField));
+
+        return gameRepository.search(search == null ? "" : search.trim(), pageable);
+    }
+
     public Game create(String name, String description, UUID platformId) {
 
         return gameRepository.save(
@@ -61,13 +74,12 @@ public class GameService {
         gameRepository.deleteOne(id);
     }
 
-
     private String mapSortField(String sortField) {
         return switch (sortField) {
-            case "name" -> "g.name";
-            case "description" -> "g.description";
-            case "platform" -> "p.name";
-            default -> "g.name";
+            case "name" -> "name";
+            case "description" -> "description";
+            case "platform" -> "platform.name";
+            default -> "name";
         };
     }
 }
