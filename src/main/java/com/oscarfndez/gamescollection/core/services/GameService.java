@@ -35,6 +35,18 @@ public class GameService {
         return gameRepository.search(search.trim());
     }
 
+    public List<Game> retrieveAny(String search, String sortField, String sortDir) {
+
+        String field = mapSortField(sortField);
+        boolean asc = !"desc".equalsIgnoreCase(sortDir);
+
+        if (search == null || search.isBlank()) {
+            return gameRepository.findAllSorted(field, asc);
+        }
+
+        return gameRepository.searchAndSort(search.trim(), field, asc);
+    }
+
     public Game create(String name, String description, UUID platformId) {
 
         return gameRepository.save(
@@ -47,5 +59,15 @@ public class GameService {
 
     public void deleteOne(UUID id) {
         gameRepository.deleteOne(id);
+    }
+
+
+    private String mapSortField(String sortField) {
+        return switch (sortField) {
+            case "name" -> "g.name";
+            case "description" -> "g.description";
+            case "platform" -> "p.name";
+            default -> "g.name";
+        };
     }
 }

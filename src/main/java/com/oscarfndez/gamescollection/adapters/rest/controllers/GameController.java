@@ -31,9 +31,13 @@ public class GameController {
     }
 
     @GetMapping("/api/game/all")
-    public ResponseEntity<List<GameDto>> loadAllGames(@RequestParam(required = false) final String search) {
+    public ResponseEntity<List<GameDto>> loadAllGames(
+            @RequestParam(required = false) final String search,
+            @RequestParam(required = false, defaultValue = "name") final String sortField,
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir
+    ) {
         return new ResponseEntity<>(
-                gameService.retrieveAny(search)
+                gameService.retrieveAny(search, sortField, sortDir)
                         .stream()
                         .map(gameModelDtoMapper::mapToDTO)
                         .collect(Collectors.toList()),
