@@ -5,6 +5,7 @@ import com.oscarfndez.gamescollection.adapters.persistence.entities.GameEntity;
 import com.oscarfndez.gamescollection.adapters.persistence.entities.PlatformEntity;
 import com.oscarfndez.gamescollection.core.model.Game;
 import com.oscarfndez.gamescollection.core.model.Platform;
+import com.oscarfndez.gamescollection.ports.repositories.GameRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Component
 public class GameService {
 
-    private final HexagonalRepository<Game, GameEntity> gameRepository;
+    private final GameRepository gameRepository;
     private final HexagonalRepository<Platform, PlatformEntity> platformRepository;
 
     public Game retrieveOne(UUID id) {
@@ -24,6 +25,14 @@ public class GameService {
 
     public List<Game> retrieveAny() {
         return gameRepository.retrieveAny();
+    }
+
+    public List<Game> retrieveAny(String search) {
+        if (search == null || search.isBlank()) {
+            return gameRepository.retrieveAny();
+        }
+
+        return gameRepository.search(search.trim());
     }
 
     public Game create(String name, String description, UUID platformId) {

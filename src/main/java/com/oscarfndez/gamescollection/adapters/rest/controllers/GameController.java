@@ -31,10 +31,14 @@ public class GameController {
     }
 
     @GetMapping("/api/game/all")
-    public ResponseEntity<List<GameDto>> loadAllPlatforms() {
+    public ResponseEntity<List<GameDto>> loadAllGames(@RequestParam(required = false) final String search) {
         return new ResponseEntity<>(
-                gameService.retrieveAny().stream().map(gameModelDtoMapper::mapToDTO).collect(Collectors.toList())
-                , HttpStatus.OK);
+                gameService.retrieveAny(search)
+                        .stream()
+                        .map(gameModelDtoMapper::mapToDTO)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/api/game")
