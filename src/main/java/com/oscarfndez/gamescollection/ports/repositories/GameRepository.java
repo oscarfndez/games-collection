@@ -40,7 +40,7 @@ public class GameRepository extends HexagonalRepository<Game, GameEntity> {
         select g
         from GameEntity g
         join g.platform p
-        order by """ + sortField + " " + direction;
+        """ + " order by " + sortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)
                 .getResultList()
@@ -60,7 +60,7 @@ public class GameRepository extends HexagonalRepository<Game, GameEntity> {
         where lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
            or lower(p.name) like lower(concat('%', :search, '%'))
-        order by """ + sortField + " " + direction;
+        """ + " order by " + sortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)
                 .setParameter("search", search)
