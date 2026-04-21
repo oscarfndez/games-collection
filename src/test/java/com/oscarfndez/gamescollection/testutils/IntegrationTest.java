@@ -7,6 +7,7 @@ import com.oscarfndez.framework.adapters.persistence.auth.UserRepository;
 import com.oscarfndez.framework.core.services.auth.impl.JwtServiceImpl;
 import com.oscarfndez.gamescollection.adapters.persistence.PlatformJpaRepository;
 import com.oscarfndez.gamescollection.config.JwtAuthenticationFilter;
+import com.oscarfndez.gamescollection.ports.repositories.GameJpaRepository;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
