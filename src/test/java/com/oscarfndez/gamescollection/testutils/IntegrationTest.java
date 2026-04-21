@@ -5,7 +5,6 @@ import com.oscarfndez.framework.core.model.auth.Role;
 import com.oscarfndez.framework.core.model.auth.User;
 import com.oscarfndez.framework.adapters.persistence.auth.UserRepository;
 import com.oscarfndez.framework.core.services.auth.impl.JwtServiceImpl;
-import com.oscarfndez.gamescollection.adapters.persistence.GameJpaRepository;
 import com.oscarfndez.gamescollection.adapters.persistence.PlatformJpaRepository;
 import com.oscarfndez.gamescollection.config.JwtAuthenticationFilter;
 import org.flywaydb.core.Flyway;
