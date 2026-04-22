@@ -13,7 +13,6 @@ import java.util.UUID;
 @Data
 public class PlatformEntity {
     @Id
-    @GeneratedValue(generator = "UUID")
     private UUID id;
     private String name;
     private String description;
