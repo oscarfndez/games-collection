@@ -6,6 +6,8 @@ import com.oscarfndez.gamescollection.core.model.Platform;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,16 +16,14 @@ import java.util.List;
 public class PlatformRepository extends HexagonalRepository<Platform, PlatformEntity> {
 
     @Autowired
-    private PlatformJpaRepository platformJpaRepository;
+    private com.oscarfndez.gamescollection.adapters.persistence.repositories.PlatformJpaRepository platformJpaRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Platform> search(String search) {
-        return platformJpaRepository.search(search)
-                .stream()
-                .map(modelEntityMapper::entityToModel)
-                .toList();
+    public Page<Platform> search(String search, Pageable pageable) {
+        return platformJpaRepository.search(search, pageable)
+                .map(modelEntityMapper::entityToModel);
     }
 
     public List<Platform> findAllSorted(String sortField, boolean asc) {

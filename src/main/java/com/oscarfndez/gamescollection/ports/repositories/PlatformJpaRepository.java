@@ -1,11 +1,12 @@
-package com.oscarfndez.gamescollection.ports.repositories;
+package com.oscarfndez.gamescollection.adapters.persistence.repositories;
 
 import com.oscarfndez.gamescollection.adapters.persistence.entities.PlatformEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface PlatformJpaRepository extends JpaRepository<PlatformEntity, UUID> {
@@ -13,8 +14,9 @@ public interface PlatformJpaRepository extends JpaRepository<PlatformEntity, UUI
     @Query("""
         select p
         from PlatformEntity p
-        where lower(p.name) like lower(concat('%', :search, '%'))
-           or lower(p.description) like lower(concat('%', :search, '%'))
+        where (:search is null or :search = ''
+           or lower(p.name) like lower(concat('%', :search, '%'))
+           or lower(p.description) like lower(concat('%', :search, '%')))
     """)
-    List<PlatformEntity> search(@Param("search") String search);
+    Page<PlatformEntity> search(@Param("search") String search, Pageable pageable);
 }
