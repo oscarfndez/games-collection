@@ -19,6 +19,7 @@ public class GameEntity {
     private UUID id;
     private String name;
     private String description;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "platform_id", referencedColumnName = "id")

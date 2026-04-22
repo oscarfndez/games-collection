@@ -60,14 +60,26 @@ public class GameService {
         return gameRepository.search(search == null ? "" : search.trim(), pageable);
     }
 
-    public Game create(String name, String description, UUID platformId) {
-
+    public Game create(String name, String description, UUID platformId, String imageUrl) {
         return gameRepository.save(
-                Game.builder().id(UUID.randomUUID()).name(name).description(description).platform(platformRepository.retrieveOne(platformId)).build());
+                Game.builder()
+                        .id(UUID.randomUUID())
+                        .name(name)
+                        .description(description)
+                        .imageUrl(imageUrl)
+                        .platform(platformRepository.retrieveOne(platformId))
+                        .build());
     }
 
-    public Game updateGame(UUID id, String name, String description, UUID platformId) {
-        return gameRepository.save(Game.builder().id(id).name(name).description(description).platform(platformRepository.retrieveOne(platformId)).build());
+    public Game updateGame(UUID id, String name, String description, UUID platformId, String imageUrl) {
+        return gameRepository.save(
+                Game.builder()
+                        .id(id)
+                        .name(name)
+                        .description(description)
+                        .imageUrl(imageUrl)
+                        .platform(platformRepository.retrieveOne(platformId))
+                        .build());
     }
 
     public void deleteOne(UUID id) {

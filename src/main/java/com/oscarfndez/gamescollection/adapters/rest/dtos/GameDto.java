@@ -25,4 +25,6 @@ public class GameDto {
     private UUID platformId;
     @JsonProperty("platform_name")
     private String platformName;
+    @JsonProperty("image_url")
+    private String imageUrl;
 }

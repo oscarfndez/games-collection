@@ -15,10 +15,10 @@ public class GameEntityModelMapper implements ModelEntityMapper<Game, GameEntity
 
 
     public GameEntity modelToEntity(Game game) {
-        return new GameEntity(game.getId(), game.getName(), game.getDescription(), platformEntityModelMapper.modelToEntity(game.getPlatform()));
+        return new GameEntity(game.getId(), game.getName(), game.getDescription(), game.getImageUrl(), platformEntityModelMapper.modelToEntity(game.getPlatform()));
     }
 
     public Game entityToModel(GameEntity gameEntity) {
-        return new Game(gameEntity.getId(), gameEntity.getName(), gameEntity.getDescription(), platformEntityModelMapper.entityToModel(gameEntity.getPlatform()));
+        return new Game(gameEntity.getId(), gameEntity.getName(), gameEntity.getDescription(), platformEntityModelMapper.entityToModel(gameEntity.getPlatform()), gameEntity.getImageUrl());
     }
 }

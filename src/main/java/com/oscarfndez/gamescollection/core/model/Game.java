@@ -14,4 +14,5 @@ public class Game {
     private String name;
     private String description;
     private Platform platform;
+    private String imageUrl;
 }

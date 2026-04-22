@@ -63,15 +63,32 @@ public class GameController {
     public ResponseEntity<GameDto> createGame(@RequestBody GameDto gameDto) {
 
         return new ResponseEntity<>(
-                gameModelDtoMapper.mapToDTO(gameService.create(gameDto.getName(), gameDto.getDescription(), gameDto.getPlatformId())
-                ), HttpStatus.CREATED);
+                gameModelDtoMapper.mapToDTO(
+                        gameService.create(
+                                gameDto.getName(),
+                                gameDto.getDescription(),
+                                gameDto.getPlatformId(),
+                                gameDto.getImageUrl()
+                        )
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("/api/game")
     public ResponseEntity<GameDto> updateGame(@RequestParam final UUID id, @RequestBody GameDto gameDto) {
         return new ResponseEntity<>(
-                gameModelDtoMapper.mapToDTO(gameService.updateGame(id, gameDto.getName(), gameDto.getDescription(), gameDto.getPlatformId())
-                ), HttpStatus.CREATED);
+                gameModelDtoMapper.mapToDTO(
+                        gameService.updateGame(
+                                id,
+                                gameDto.getName(),
+                                gameDto.getDescription(),
+                                gameDto.getPlatformId(),
+                                gameDto.getImageUrl()
+                        )
+                ),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/api/game")
