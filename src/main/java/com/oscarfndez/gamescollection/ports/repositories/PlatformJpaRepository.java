@@ -1,4 +1,4 @@
-package com.oscarfndez.gamescollection.adapters.persistence.repositories;
+package com.oscarfndez.gamescollection.ports.repositories;
 
 import com.oscarfndez.gamescollection.adapters.persistence.entities.PlatformEntity;
 import org.springframework.data.domain.Page;

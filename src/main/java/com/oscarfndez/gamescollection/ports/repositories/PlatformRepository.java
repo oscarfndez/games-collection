@@ -16,7 +16,7 @@ import java.util.List;
 public class PlatformRepository extends HexagonalRepository<Platform, PlatformEntity> {
 
     @Autowired
-    private com.oscarfndez.gamescollection.adapters.persistence.repositories.PlatformJpaRepository platformJpaRepository;
+    private PlatformJpaRepository platformJpaRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
