@@ -30,10 +30,18 @@ public class PlatformController {
     }
 
     @GetMapping("/api/platform/all")
-    public ResponseEntity<List<PlatformDto>> loadAllPlatforms() {
+    public ResponseEntity<List<PlatformDto>> loadAllPlatforms(
+            @RequestParam(required = false) final String search,
+            @RequestParam(required = false, defaultValue = "name") final String sortField,
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir
+    ) {
         return new ResponseEntity<>(
-                platformService.retrieveAny().stream().map(platformModelDtoMapper::mapToDTO).collect(Collectors.toList())
-                , HttpStatus.OK);
+                platformService.retrieveAny(search, sortField, sortDir)
+                        .stream()
+                        .map(platformModelDtoMapper::mapToDTO)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/api/platform")
