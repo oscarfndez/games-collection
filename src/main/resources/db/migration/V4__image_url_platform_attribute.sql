@@ -1,1 +1,1 @@
-ALTER TABLE game ADD COLUMN image_url VARCHAR(1000);
+ALTER TABLE platform ADD COLUMN image_url VARCHAR(1000);
