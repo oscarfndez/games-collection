@@ -68,8 +68,8 @@ public class PlatformController {
     @PutMapping("/api/platform")
     public ResponseEntity<PlatformDto> updatePlatform(@RequestParam final UUID id, @RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
-                platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription())
-                ), HttpStatus.CREATED);
+                platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription(),platformDto.getImageUrl())
+                ), HttpStatus.OK);
     }
 
     @DeleteMapping("/api/platform")

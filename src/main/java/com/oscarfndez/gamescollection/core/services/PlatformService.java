@@ -69,12 +69,13 @@ public class PlatformService {
         );
     }
 
-    public Platform updatePlatform(UUID id, String name, String description) {
+    public Platform updatePlatform(UUID id, String name, String description, String imageUrl) {
         return platformRepository.save(
                 Platform.builder()
                         .id(id)
                         .name(name)
                         .description(description)
+                        .imageUrl(imageUrl)
                         .build()
         );
     }
