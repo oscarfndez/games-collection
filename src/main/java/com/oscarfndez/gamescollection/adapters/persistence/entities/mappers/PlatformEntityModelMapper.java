@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 public class PlatformEntityModelMapper implements ModelEntityMapper<Platform, PlatformEntity> {
 
     public PlatformEntity modelToEntity(Platform platform) {
-        return new PlatformEntity(platform.getId(), platform.getName(), platform.getDescription());
+        return new PlatformEntity(platform.getId(), platform.getName(), platform.getDescription(), platform.getImageUrl());
     }
 
     public Platform entityToModel(PlatformEntity platformEntity) {
-        return new Platform(platformEntity.getId(), platformEntity.getName(), platformEntity.getDescription());
+        return new Platform(platformEntity.getId(), platformEntity.getName(), platformEntity.getDescription(), platformEntity.getImageUrl());
     }
 }
