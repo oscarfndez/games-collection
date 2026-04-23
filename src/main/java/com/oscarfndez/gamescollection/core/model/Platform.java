@@ -14,5 +14,5 @@ public class Platform {
     private UUID id;
     private String name;
     private String description;
-
+    private String imageUrl;
 }

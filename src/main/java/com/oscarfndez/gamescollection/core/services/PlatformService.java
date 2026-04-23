@@ -58,12 +58,13 @@ public class PlatformService {
         };
     }
 
-    public Platform createPlatform(String name, String description) {
+    public Platform createPlatform(String name, String description, String imageUrl) {
         return platformRepository.save(
                 Platform.builder()
                         .id(UUID.randomUUID())
                         .name(name)
                         .description(description)
+                        .imageUrl(imageUrl)
                         .build()
         );
     }

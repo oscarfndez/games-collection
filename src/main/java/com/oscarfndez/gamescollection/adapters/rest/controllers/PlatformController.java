@@ -61,7 +61,7 @@ public class PlatformController {
     @PostMapping("/api/platform")
     public ResponseEntity<PlatformDto> createPlatform(@RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
-                platformModelDtoMapper.mapToDTO(platformService.createPlatform(platformDto.getName(), platformDto.getDescription())
+                platformModelDtoMapper.mapToDTO(platformService.createPlatform(platformDto.getName(), platformDto.getDescription(), platformDto.getImageUrl())
                 ), HttpStatus.CREATED);
     }
 

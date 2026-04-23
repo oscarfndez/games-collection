@@ -20,4 +20,6 @@ public class PlatformDto {
     private String name;
     @JsonProperty("description")
     private String description;
+    @JsonProperty("image_url")
+    private String imageUrl;
 }
