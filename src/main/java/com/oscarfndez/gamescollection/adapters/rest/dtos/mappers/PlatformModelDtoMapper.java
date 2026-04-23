@@ -12,6 +12,7 @@ public class PlatformModelDtoMapper implements ModelDtoMapper<Platform, Platform
         return PlatformDto.builder().id(platform.getId())
                 .name(platform.getName())
                 .description(platform.getDescription())
+                .imageUrl(platform.getImageUrl())
                 .build();
     }
 }
