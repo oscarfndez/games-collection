@@ -11,8 +11,8 @@
     <groupId>com.oscarfndez.gamescollection</groupId>
     <artifactId>inventory-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>games-collection</name>
-    <description>Games collection</description>
+    <name>inventory-service</name>
+    <description>Inventory service</description>
     <url/>
     <licenses>
         <license/>
@@ -251,7 +251,7 @@
                         <image>eclipse-temurin:21-jre</image>
                     </from>
                     <to>
-                        <image>oscarfndez/games-collection</image>
+                        <image>oscarfndez/inventory-service</image>
                     </to>
                     <container>
                         <ports>
