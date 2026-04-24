@@ -2,11 +2,10 @@ package com.oscarfndez.gamescollection.adapters.controllers;
 
 import com.oscarfndez.framework.core.model.auth.Role;
 import com.oscarfndez.framework.core.model.auth.User;
-import com.oscarfndez.gamescollection.adapters.persistence.entities.GameEntity;
-import com.oscarfndez.gamescollection.adapters.rest.dtos.GameDto;
+import com.oscarfndez.inventory.adapters.persistence.entities.GameEntity;
+import com.oscarfndez.inventory.adapters.rest.dtos.GameDto;
 import com.oscarfndez.gamescollection.testutils.IntegrationTest;
 import jakarta.transaction.Transactional;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
