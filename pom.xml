@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.oscarfndez.gamescollection</groupId>
-    <artifactId>games-collection</artifactId>
+    <artifactId>inventory-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>games-collection</name>
     <description>Games collection</description>

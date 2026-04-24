@@ -1,4 +1,4 @@
-package com.oscarfndez.users.core.services.auth;
+package com.oscarfndez.framework.core.services.auth;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

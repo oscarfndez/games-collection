@@ -1,8 +1,8 @@
 package com.oscarfndez.framework.config;
 
 
-import com.oscarfndez.users.core.services.auth.JwtService;
-import com.oscarfndez.users.core.services.auth.UserService;
+import com.oscarfndez.framework.core.services.auth.JwtService;
+import com.oscarfndez.framework.core.services.auth.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

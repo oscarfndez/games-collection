@@ -1,6 +1,6 @@
-package com.oscarfndez.users.core.services.auth.impl;
+package com.oscarfndez.framework.core.services.auth.impl;
 
-import com.oscarfndez.users.core.services.auth.JwtService;
+import com.oscarfndez.framework.core.services.auth.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
