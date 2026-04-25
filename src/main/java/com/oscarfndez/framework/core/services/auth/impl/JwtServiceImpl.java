@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -26,8 +27,26 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    @Override
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put(
+                "role",
+                userDetails.getAuthorities().stream()
+                        .findFirst()
+                        .map(Object::toString)
+                        .orElse(null)
+        );
+        return generateToken(extraClaims, userDetails);
+    }
+
+    @Override
+    public boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 
     @Override

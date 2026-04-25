@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 class GlobalControllerExceptionHandler {
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
-    public void handleForbidden() {
+    public void handleUnauthorized() {
     }
 }
