@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping({"/api/platform", "/gamesCollection/api/platform"})
 @AllArgsConstructor
 @PreAuthorize("@authorizationService.hasRole('USER')")
 public class PlatformController {
@@ -24,7 +25,7 @@ public class PlatformController {
     private final PlatformModelDtoMapper platformModelDtoMapper;
     private final PlatformService platformService;
 
-    @GetMapping("/api/platform")
+    @GetMapping
     public ResponseEntity<PlatformDto> loadPlatform(@RequestParam final UUID id) {
 
         return new ResponseEntity<>(
@@ -32,7 +33,7 @@ public class PlatformController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/api/platform/all")
+    @GetMapping("/all")
     public ResponseEntity<PageResponseDto<PlatformDto>> loadAllPlatforms(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "name") final String sortField,
@@ -58,21 +59,21 @@ public class PlatformController {
         );
     }
 
-    @PostMapping("/api/platform")
+    @PostMapping
     public ResponseEntity<PlatformDto> createPlatform(@RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.createPlatform(platformDto.getName(), platformDto.getDescription(), platformDto.getImageUrl())
                 ), HttpStatus.CREATED);
     }
 
-    @PutMapping("/api/platform")
+    @PutMapping
     public ResponseEntity<PlatformDto> updatePlatform(@RequestParam final UUID id, @RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription(),platformDto.getImageUrl())
                 ), HttpStatus.OK);
     }
 
-    @DeleteMapping("/api/platform")
+    @DeleteMapping
     public ResponseEntity<Void> deletePlatform(@RequestParam final UUID id) {
         platformService.deleteOne(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
