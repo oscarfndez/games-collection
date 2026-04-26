@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -28,7 +30,35 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractRole(String token) {
-        return extractClaim(token, claims -> claims.get("role", String.class));
+        return extractRoles(token).stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+
+        Object roleClaim = claims.get("role");
+        if (roleClaim instanceof String role) {
+            return List.of(role);
+        }
+
+        Object rolesClaim = claims.get("roles");
+        if (rolesClaim instanceof Collection<?> roles) {
+            return roles.stream()
+                    .map(Object::toString)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
+
+        Object authoritiesClaim = claims.get("authorities");
+        if (authoritiesClaim instanceof Collection<?> authorities) {
+            return authorities.stream()
+                    .map(Object::toString)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
+
+        return List.of();
     }
 
     @Override

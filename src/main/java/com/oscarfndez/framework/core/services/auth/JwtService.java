@@ -2,10 +2,14 @@ package com.oscarfndez.framework.core.services.auth;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
+
 public interface JwtService {
     String extractUserName(String token);
 
     String extractRole(String token);
+
+    List<String> extractRoles(String token);
 
     String generateToken(UserDetails userDetails);
 

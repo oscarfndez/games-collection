@@ -32,18 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
+        if (!StringUtils.hasText(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String jwt = authHeader.substring(7);
+        final String jwt = extractToken(authHeader);
         final String userEmail = jwtService.extractUserName(jwt);
-        final String role = jwtService.extractRole(jwt);
+        final List<String> roles = jwtService.extractRoles(jwt);
 
         if (StringUtils.hasText(userEmail)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = buildUserDetails(userEmail, role);
+            UserDetails userDetails = buildUserDetails(userEmail, roles);
 
             if (userDetails != null && jwtService.isTokenValid(jwt)) {
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -65,14 +65,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private UserDetails buildUserDetails(String userEmail, String role) {
-        if (!StringUtils.hasText(role)) {
+    private String extractToken(String authHeader) {
+        if (authHeader.regionMatches(true, 0, "Bearer ", 0, 7)) {
+            return authHeader.substring(7);
+        }
+
+        return authHeader;
+    }
+
+    private UserDetails buildUserDetails(String userEmail, List<String> roles) {
+        if (roles == null || roles.isEmpty()) {
             return null;
         }
 
         return User.withUsername(userEmail)
                 .password("")
-                .authorities(List.of(new SimpleGrantedAuthority(role)))
+                .authorities(roles.stream().map(SimpleGrantedAuthority::new).toList())
                 .build();
     }
 }
