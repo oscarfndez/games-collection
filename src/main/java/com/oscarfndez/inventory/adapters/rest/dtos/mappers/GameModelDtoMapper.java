@@ -1,12 +1,11 @@
 package com.oscarfndez.inventory.adapters.rest.dtos.mappers;
 
-import com.oscarfndez.framework.adapters.persistence.repositories.mappers.ModelDtoMapper;
 import com.oscarfndez.inventory.adapters.rest.dtos.GameDto;
 import com.oscarfndez.inventory.core.model.Game;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GameModelDtoMapper implements ModelDtoMapper<Game, GameDto> {
+public class GameModelDtoMapper {
 
     public GameDto mapToDTO(Game game) {
         return GameDto.builder().id(game.getId())

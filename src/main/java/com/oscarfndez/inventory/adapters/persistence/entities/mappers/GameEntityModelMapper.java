@@ -1,6 +1,5 @@
 package com.oscarfndez.inventory.adapters.persistence.entities.mappers;
 
-import com.oscarfndez.framework.adapters.persistence.mappers.ModelEntityMapper;
 import com.oscarfndez.inventory.adapters.persistence.entities.GameEntity;
 import com.oscarfndez.inventory.core.model.Game;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GameEntityModelMapper implements ModelEntityMapper<Game, GameEntity> {
+public class GameEntityModelMapper {
 
 
     private final PlatformEntityModelMapper platformEntityModelMapper;

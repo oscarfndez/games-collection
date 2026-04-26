@@ -1,29 +1,58 @@
 package com.oscarfndez.inventory.ports.repositories;
 
-import com.oscarfndez.framework.adapters.persistence.repositories.HexagonalRepository;
 import com.oscarfndez.inventory.adapters.persistence.entities.PlatformEntity;
+import com.oscarfndez.inventory.adapters.persistence.entities.mappers.PlatformEntityModelMapper;
+import com.oscarfndez.inventory.adapters.persistence.exceptions.ResourceNotFoundException;
 import com.oscarfndez.inventory.core.model.Platform;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
-public class PlatformRepository extends HexagonalRepository<Platform, PlatformEntity> {
+@RequiredArgsConstructor
+public class PlatformRepository {
 
-    @Autowired
-    private PlatformJpaRepository platformJpaRepository;
+    private final PlatformJpaRepository platformJpaRepository;
+    private final PlatformEntityModelMapper platformEntityModelMapper;
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    public Platform retrieveOne(UUID id) {
+        try {
+            return platformEntityModelMapper.entityToModel(platformJpaRepository.getReferenceById(id));
+        } catch (JpaObjectRetrievalFailureException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
+
+    public List<Platform> retrieveAny() {
+        return platformJpaRepository.findAll()
+                .stream()
+                .map(platformEntityModelMapper::entityToModel)
+                .toList();
+    }
+
+    public Platform save(Platform platform) {
+        return platformEntityModelMapper.entityToModel(
+                platformJpaRepository.save(platformEntityModelMapper.modelToEntity(platform))
+        );
+    }
+
+    public void deleteOne(UUID id) {
+        platformJpaRepository.deleteById(id);
+    }
+
     public Page<Platform> search(String search, Pageable pageable) {
         return platformJpaRepository.search(search, pageable)
-                .map(modelEntityMapper::entityToModel);
+                .map(platformEntityModelMapper::entityToModel);
     }
 
     public List<Platform> findAllSorted(String sortField, boolean asc) {
@@ -37,7 +66,7 @@ public class PlatformRepository extends HexagonalRepository<Platform, PlatformEn
         return entityManager.createQuery(query, PlatformEntity.class)
                 .getResultList()
                 .stream()
-                .map(modelEntityMapper::entityToModel)
+                .map(platformEntityModelMapper::entityToModel)
                 .toList();
     }
 
@@ -55,7 +84,7 @@ public class PlatformRepository extends HexagonalRepository<Platform, PlatformEn
                 .setParameter("search", search)
                 .getResultList()
                 .stream()
-                .map(modelEntityMapper::entityToModel)
+                .map(platformEntityModelMapper::entityToModel)
                 .toList();
     }
 }

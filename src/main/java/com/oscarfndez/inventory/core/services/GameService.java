@@ -1,10 +1,8 @@
 package com.oscarfndez.inventory.core.services;
 
-import com.oscarfndez.framework.adapters.persistence.repositories.HexagonalRepository;
-import com.oscarfndez.inventory.adapters.persistence.entities.PlatformEntity;
 import com.oscarfndez.inventory.core.model.Game;
-import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
+import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +18,7 @@ import java.util.UUID;
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final HexagonalRepository<Platform, PlatformEntity> platformRepository;
+    private final PlatformRepository platformRepository;
 
     public Game retrieveOne(UUID id) {
         return gameRepository.retrieveOne(id);

@@ -1,12 +1,11 @@
 package com.oscarfndez.inventory.adapters.persistence.entities.mappers;
 
-import com.oscarfndez.framework.adapters.persistence.mappers.ModelEntityMapper;
 import com.oscarfndez.inventory.adapters.persistence.entities.PlatformEntity;
 import com.oscarfndez.inventory.core.model.Platform;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlatformEntityModelMapper implements ModelEntityMapper<Platform, PlatformEntity> {
+public class PlatformEntityModelMapper {
 
     public PlatformEntity modelToEntity(Platform platform) {
         return new PlatformEntity(platform.getId(), platform.getName(), platform.getDescription(), platform.getImageUrl());

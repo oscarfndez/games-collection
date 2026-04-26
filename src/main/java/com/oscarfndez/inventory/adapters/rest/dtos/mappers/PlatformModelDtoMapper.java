@@ -1,12 +1,11 @@
 package com.oscarfndez.inventory.adapters.rest.dtos.mappers;
 
-import com.oscarfndez.framework.adapters.persistence.repositories.mappers.ModelDtoMapper;
 import com.oscarfndez.inventory.adapters.rest.dtos.PlatformDto;
 import com.oscarfndez.inventory.core.model.Platform;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlatformModelDtoMapper implements ModelDtoMapper<Platform, PlatformDto> {
+public class PlatformModelDtoMapper {
 
     public PlatformDto mapToDTO(Platform platform) {
         return PlatformDto.builder().id(platform.getId())
