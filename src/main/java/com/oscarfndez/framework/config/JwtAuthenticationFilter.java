@@ -2,11 +2,13 @@ package com.oscarfndez.framework.config;
 
 
 import com.oscarfndez.framework.core.services.auth.JwtService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
@@ -33,19 +36,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         if (!StringUtils.hasText(authHeader)) {
+            log.debug("Request without Authorization header: {} {}", request.getMethod(), request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String jwt = extractToken(authHeader);
-        final String userEmail = jwtService.extractUserName(jwt);
-        final List<String> roles = jwtService.extractRoles(jwt);
+        final String jwt;
+        final String userEmail;
+        final List<String> roles;
+        try {
+            jwt = extractToken(authHeader);
+            userEmail = jwtService.extractUserName(jwt);
+            roles = jwtService.extractRoles(jwt);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("Invalid JWT received for {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (StringUtils.hasText(userEmail)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = buildUserDetails(userEmail, roles);
 
             if (userDetails != null && jwtService.isTokenValid(jwt)) {
+                log.debug("Authenticated JWT subject={} roles={} path={}", userEmail, roles, request.getRequestURI());
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -59,6 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authenticationToken);
                 SecurityContextHolder.setContext(context);
+            } else {
+                log.warn("JWT subject={} did not provide valid roles for path={}", userEmail, request.getRequestURI());
             }
         }
 
