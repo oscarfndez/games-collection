@@ -4,6 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = 'oscarfndez/inventory-service'
         IMAGE_TAG = "build-${env.BUILD_NUMBER}"
+        SONAR_PROJECT_KEY = 'inventory-service'
+        SONAR_ORGANIZATION = 'oscarfndez'
     }
 
     stages {
@@ -16,6 +18,20 @@ pipeline {
         stage('Build and Test') {
             steps {
                 sh 'mvn -B clean verify -Djkube.skip=true'
+            }
+        }
+
+        stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube Cloud') {
+                    sh '''
+                      mvn -B sonar:sonar \
+                        -DskipTests \
+                        -Djkube.skip=true \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.organization=${SONAR_ORGANIZATION}
+                    '''
+                }
             }
         }
 
