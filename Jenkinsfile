@@ -23,7 +23,7 @@ pipeline {
 
         stage('SonarCloud Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube Cloud') {
+                withSonarQubeEnv('SonarQube') {
                     sh '''
                       mvn -B sonar:sonar \
                         -DskipTests \
