@@ -13,9 +13,9 @@ public class GameItemModelDtoMapper {
                 .userId(gameItem.getUserId())
                 .gameId(gameItem.getGame().getId())
                 .gameName(gameItem.getGame().getName())
+                .gameImageUrl(gameItem.getGame().getImageUrl())
                 .platformId(gameItem.getPlatform().getId())
                 .platformName(gameItem.getPlatform().getName())
                 .build();
     }
 }
-

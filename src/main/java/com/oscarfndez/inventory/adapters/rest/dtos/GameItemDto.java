@@ -21,9 +21,10 @@ public class GameItemDto {
     private UUID gameId;
     @JsonProperty("game_name")
     private String gameName;
+    @JsonProperty("game_image_url")
+    private String gameImageUrl;
     @JsonProperty("platform_id")
     private UUID platformId;
     @JsonProperty("platform_name")
     private String platformName;
 }
-
