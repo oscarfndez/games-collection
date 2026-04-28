@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -25,6 +26,10 @@ public class GameDto {
     private UUID platformId;
     @JsonProperty("platform_name")
     private String platformName;
+    @JsonProperty("platform_ids")
+    private List<UUID> platformIds;
+    @JsonProperty("platform_names")
+    private List<String> platformNames;
     @JsonProperty("image_url")
     private String imageUrl;
 }

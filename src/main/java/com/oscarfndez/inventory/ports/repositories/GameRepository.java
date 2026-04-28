@@ -1,6 +1,7 @@
 package com.oscarfndez.inventory.ports.repositories;
 
 import com.oscarfndez.inventory.adapters.persistence.entities.GameEntity;
+import com.oscarfndez.inventory.adapters.persistence.entities.PlatformEntity;
 import com.oscarfndez.inventory.adapters.persistence.entities.mappers.GameEntityModelMapper;
 import com.oscarfndez.inventory.adapters.persistence.exceptions.ResourceNotFoundException;
 import com.oscarfndez.inventory.core.model.Game;
@@ -9,6 +10,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class GameRepository {
 
     @PersistenceContext
@@ -42,8 +45,13 @@ public class GameRepository {
     }
 
     public Game save(Game game) {
+        GameEntity entity = gameEntityModelMapper.modelToEntity(game);
+        entity.setPlatforms(game.getPlatforms().stream()
+                .map(platform -> entityManager.getReference(PlatformEntity.class, platform.getId()))
+                .toList());
+
         return gameEntityModelMapper.entityToModel(
-                gameJpaRepository.save(gameEntityModelMapper.modelToEntity(game))
+                gameJpaRepository.save(entity)
         );
     }
 
@@ -68,12 +76,13 @@ public class GameRepository {
     public List<Game> findAllSorted(String sortField, boolean asc) {
 
         String direction = asc ? "asc" : "desc";
+        String querySortField = mapQuerySortField(sortField);
 
         String query = """
-        select g
+        select distinct g
         from GameEntity g
-        join g.platform p
-        """ + " order by " + sortField + " " + direction;
+        join g.platforms p
+        """ + " order by " + querySortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)
                 .getResultList()
@@ -85,15 +94,16 @@ public class GameRepository {
     public List<Game> searchAndSort(String search, String sortField, boolean asc) {
 
         String direction = asc ? "asc" : "desc";
+        String querySortField = mapQuerySortField(sortField);
 
         String query = """
-        select g
+        select distinct g
         from GameEntity g
-        join g.platform p
+        join g.platforms p
         where lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
            or lower(p.name) like lower(concat('%', :search, '%'))
-        """ + " order by " + sortField + " " + direction;
+        """ + " order by " + querySortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)
                 .setParameter("search", search)
@@ -101,5 +111,13 @@ public class GameRepository {
                 .stream()
                 .map(gameEntityModelMapper::entityToModel)
                 .toList();
+    }
+
+    private String mapQuerySortField(String sortField) {
+        return switch (sortField) {
+            case "description" -> "g.description";
+            case "platforms.name" -> "p.name";
+            default -> "g.name";
+        };
     }
 }

@@ -72,12 +72,12 @@ class GameControllerTest {
         GameDto request = GameDto.builder()
                 .name("Zelda")
                 .description("Adventure")
-                .platformId(platformId)
+                .platformIds(List.of(platformId))
                 .imageUrl("zelda.png")
                 .build();
         Game createdGame = game(gameId);
         GameDto responseDto = gameDto(gameId);
-        when(gameService.create("Zelda", "Adventure", platformId, "zelda.png")).thenReturn(createdGame);
+        when(gameService.create("Zelda", "Adventure", List.of(platformId), "zelda.png")).thenReturn(createdGame);
         when(gameModelDtoMapper.mapToDTO(createdGame)).thenReturn(responseDto);
 
         var response = gameController.createGame(request);
@@ -93,12 +93,12 @@ class GameControllerTest {
         GameDto request = GameDto.builder()
                 .name("Zelda")
                 .description("Adventure")
-                .platformId(platformId)
+                .platformIds(List.of(platformId))
                 .imageUrl("zelda.png")
                 .build();
         Game updatedGame = game(gameId);
         GameDto responseDto = gameDto(gameId);
-        when(gameService.updateGame(gameId, "Zelda", "Adventure", platformId, "zelda.png")).thenReturn(updatedGame);
+        when(gameService.updateGame(gameId, "Zelda", "Adventure", List.of(platformId), "zelda.png")).thenReturn(updatedGame);
         when(gameModelDtoMapper.mapToDTO(updatedGame)).thenReturn(responseDto);
 
         var response = gameController.updateGame(gameId, request);
@@ -128,7 +128,7 @@ class GameControllerTest {
                 .id(gameId)
                 .name("Zelda")
                 .description("Adventure")
-                .platform(platform)
+                .platforms(List.of(platform))
                 .imageUrl("zelda.png")
                 .build();
     }
@@ -138,7 +138,7 @@ class GameControllerTest {
                 .id(gameId)
                 .name("Zelda")
                 .description("Adventure")
-                .platformId(UUID.randomUUID())
+                .platformIds(List.of(UUID.randomUUID()))
                 .platformName("Nintendo Switch")
                 .imageUrl("zelda.png")
                 .build();

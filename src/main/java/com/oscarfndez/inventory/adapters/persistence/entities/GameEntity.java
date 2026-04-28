@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,7 +23,11 @@ public class GameEntity {
     private String description;
     private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "platform_id", referencedColumnName = "id")
-    private PlatformEntity platform;
+    @ManyToMany
+    @JoinTable(
+            name = "game_platform",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "platform_id")
+    )
+    private List<PlatformEntity> platforms = new ArrayList<>();
 }

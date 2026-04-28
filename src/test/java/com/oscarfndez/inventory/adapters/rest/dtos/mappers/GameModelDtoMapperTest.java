@@ -26,7 +26,7 @@ class GameModelDtoMapperTest {
                 .id(gameId)
                 .name("Zelda")
                 .description("Adventure")
-                .platform(platform)
+                .platforms(java.util.List.of(platform))
                 .imageUrl("zelda.png")
                 .build();
 
@@ -37,6 +37,8 @@ class GameModelDtoMapperTest {
         assertThat(dto.getDescription()).isEqualTo("Adventure");
         assertThat(dto.getPlatformId()).isEqualTo(platformId);
         assertThat(dto.getPlatformName()).isEqualTo("Nintendo Switch");
+        assertThat(dto.getPlatformIds()).containsExactly(platformId);
+        assertThat(dto.getPlatformNames()).containsExactly("Nintendo Switch");
         assertThat(dto.getImageUrl()).isEqualTo("zelda.png");
     }
 }

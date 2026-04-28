@@ -67,7 +67,7 @@ public class GameController {
                         gameService.create(
                                 gameDto.getName(),
                                 gameDto.getDescription(),
-                                gameDto.getPlatformId(),
+                                resolvePlatformIds(gameDto),
                                 gameDto.getImageUrl()
                         )
                 ),
@@ -83,7 +83,7 @@ public class GameController {
                                 id,
                                 gameDto.getName(),
                                 gameDto.getDescription(),
-                                gameDto.getPlatformId(),
+                                resolvePlatformIds(gameDto),
                                 gameDto.getImageUrl()
                         )
                 ),
@@ -95,5 +95,17 @@ public class GameController {
     public ResponseEntity<Void> deleteGame(@RequestParam final UUID id) {
         gameService.deleteOne(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    }
+
+    private List<UUID> resolvePlatformIds(GameDto gameDto) {
+        if (gameDto.getPlatformIds() != null && !gameDto.getPlatformIds().isEmpty()) {
+            return gameDto.getPlatformIds();
+        }
+
+        if (gameDto.getPlatformId() == null) {
+            throw new IllegalArgumentException("At least one platform must be selected.");
+        }
+
+        return List.of(gameDto.getPlatformId());
     }
 }

@@ -55,7 +55,7 @@ class GameServiceTest {
     @Test
     void retrieveAnyWithSortMapsPlatformFieldAndDescendingDirection() {
         List<Game> games = List.of(game("Zelda", platform()));
-        when(gameRepository.searchAndSort("nintendo", "platform.name", false)).thenReturn(games);
+        when(gameRepository.searchAndSort("nintendo", "platforms.name", false)).thenReturn(games);
 
         assertThat(gameService.retrieveAny(" nintendo ", "platform", "desc")).isSameAs(games);
     }
@@ -72,7 +72,7 @@ class GameServiceTest {
         Pageable pageable = pageableCaptor.getValue();
         assertThat(pageable.getPageNumber()).isEqualTo(2);
         assertThat(pageable.getPageSize()).isEqualTo(25);
-        Sort.Order order = pageable.getSort().getOrderFor("platform.name");
+        Sort.Order order = pageable.getSort().getOrderFor("platforms.name");
         assertThat(order).isNotNull();
         assertThat(order.getDirection()).isEqualTo(Sort.Direction.DESC);
     }
@@ -81,7 +81,7 @@ class GameServiceTest {
     void createBuildsGameWithPlatformAndPersistsIt() {
         UUID platformId = UUID.randomUUID();
         Platform platform = platform();
-        when(platformRepository.retrieveOne(platformId)).thenReturn(platform);
+        when(platformRepository.retrieveMany(List.of(platformId))).thenReturn(List.of(platform));
         when(gameRepository.save(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Game createdGame = gameService.create("Zelda", "Adventure", platformId, "zelda.png");
@@ -90,7 +90,7 @@ class GameServiceTest {
         assertThat(createdGame.getName()).isEqualTo("Zelda");
         assertThat(createdGame.getDescription()).isEqualTo("Adventure");
         assertThat(createdGame.getImageUrl()).isEqualTo("zelda.png");
-        assertThat(createdGame.getPlatform()).isSameAs(platform);
+        assertThat(createdGame.getPlatforms()).containsExactly(platform);
     }
 
     @Test
@@ -98,14 +98,14 @@ class GameServiceTest {
         UUID gameId = UUID.randomUUID();
         UUID platformId = UUID.randomUUID();
         Platform platform = platform();
-        when(platformRepository.retrieveOne(platformId)).thenReturn(platform);
+        when(platformRepository.retrieveMany(List.of(platformId))).thenReturn(List.of(platform));
         when(gameRepository.save(any(Game.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Game updatedGame = gameService.updateGame(gameId, "Mario", "Platformer", platformId, "mario.png");
 
         assertThat(updatedGame.getId()).isEqualTo(gameId);
         assertThat(updatedGame.getName()).isEqualTo("Mario");
-        assertThat(updatedGame.getPlatform()).isSameAs(platform);
+        assertThat(updatedGame.getPlatforms()).containsExactly(platform);
     }
 
     @Test
@@ -122,7 +122,7 @@ class GameServiceTest {
                 .id(UUID.randomUUID())
                 .name(name)
                 .description("Description")
-                .platform(platform)
+                .platforms(List.of(platform))
                 .imageUrl("image.png")
                 .build();
     }

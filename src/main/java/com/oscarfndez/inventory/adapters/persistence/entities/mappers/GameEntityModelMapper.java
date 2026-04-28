@@ -14,10 +14,26 @@ public class GameEntityModelMapper {
 
 
     public GameEntity modelToEntity(Game game) {
-        return new GameEntity(game.getId(), game.getName(), game.getDescription(), game.getImageUrl(), platformEntityModelMapper.modelToEntity(game.getPlatform()));
+        return new GameEntity(
+                game.getId(),
+                game.getName(),
+                game.getDescription(),
+                game.getImageUrl(),
+                game.getPlatforms().stream()
+                        .map(platformEntityModelMapper::modelToEntity)
+                        .toList()
+        );
     }
 
     public Game entityToModel(GameEntity gameEntity) {
-        return new Game(gameEntity.getId(), gameEntity.getName(), gameEntity.getDescription(), platformEntityModelMapper.entityToModel(gameEntity.getPlatform()), gameEntity.getImageUrl());
+        return new Game(
+                gameEntity.getId(),
+                gameEntity.getName(),
+                gameEntity.getDescription(),
+                gameEntity.getPlatforms().stream()
+                        .map(platformEntityModelMapper::entityToModel)
+                        .toList(),
+                gameEntity.getImageUrl()
+        );
     }
 }

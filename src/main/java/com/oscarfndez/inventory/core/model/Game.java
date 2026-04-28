@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -13,6 +14,6 @@ public class Game {
     private UUID id;
     private String name;
     private String description;
-    private Platform platform;
+    private List<Platform> platforms;
     private String imageUrl;
 }

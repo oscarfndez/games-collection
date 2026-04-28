@@ -58,24 +58,32 @@ public class GameService {
     }
 
     public Game create(String name, String description, UUID platformId, String imageUrl) {
+        return create(name, description, List.of(platformId), imageUrl);
+    }
+
+    public Game create(String name, String description, List<UUID> platformIds, String imageUrl) {
         return gameRepository.save(
                 Game.builder()
                         .id(UUID.randomUUID())
                         .name(name)
                         .description(description)
                         .imageUrl(imageUrl)
-                        .platform(platformRepository.retrieveOne(platformId))
+                        .platforms(platformRepository.retrieveMany(platformIds))
                         .build());
     }
 
     public Game updateGame(UUID id, String name, String description, UUID platformId, String imageUrl) {
+        return updateGame(id, name, description, List.of(platformId), imageUrl);
+    }
+
+    public Game updateGame(UUID id, String name, String description, List<UUID> platformIds, String imageUrl) {
         return gameRepository.save(
                 Game.builder()
                         .id(id)
                         .name(name)
                         .description(description)
                         .imageUrl(imageUrl)
-                        .platform(platformRepository.retrieveOne(platformId))
+                        .platforms(platformRepository.retrieveMany(platformIds))
                         .build());
     }
 
@@ -87,7 +95,7 @@ public class GameService {
         return switch (sortField) {
             case "name" -> "name";
             case "description" -> "description";
-            case "platform" -> "platform.name";
+            case "platform" -> "platforms.name";
             default -> "name";
         };
     }

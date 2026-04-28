@@ -13,9 +13,9 @@ import java.util.UUID;
 public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
 
     @Query("""
-        select g
+        select distinct g
         from GameEntity g
-        join g.platform p
+        join g.platforms p
         where lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
            or lower(p.name) like lower(concat('%', :search, '%'))
@@ -23,9 +23,9 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
     List<GameEntity> search(@Param("search") String search);
 
     @Query("""
-        select g
+        select distinct g
         from GameEntity g
-        join g.platform p
+        join g.platforms p
         where (:search is null or :search = ''
            or lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))

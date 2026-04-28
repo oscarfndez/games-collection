@@ -13,7 +13,10 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -37,6 +40,24 @@ public class PlatformRepository {
         return platformJpaRepository.findAll()
                 .stream()
                 .map(platformEntityModelMapper::entityToModel)
+                .toList();
+    }
+
+    public List<Platform> retrieveMany(List<UUID> ids) {
+        List<Platform> platforms = platformJpaRepository.findAllById(ids)
+                .stream()
+                .map(platformEntityModelMapper::entityToModel)
+                .toList();
+
+        if (platforms.size() != ids.size()) {
+            throw new ResourceNotFoundException();
+        }
+
+        Map<UUID, Platform> platformsById = platforms.stream()
+                .collect(Collectors.toMap(Platform::getId, Function.identity()));
+
+        return ids.stream()
+                .map(platformsById::get)
                 .toList();
     }
 

@@ -60,7 +60,7 @@ class InventoryFlowIntegrationTest extends AbstractPostgresIntegrationTest {
         GameDto gameRequest = GameDto.builder()
                 .name("Zelda")
                 .description("Adventure")
-                .platformId(platformId)
+                .platformIds(java.util.List.of(platformId))
                 .imageUrl("zelda.png")
                 .build();
 

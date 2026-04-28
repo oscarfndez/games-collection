@@ -28,7 +28,7 @@ class GameEntityModelMapperTest {
                 .id(gameId)
                 .name("Zelda")
                 .description("Adventure")
-                .platform(platform)
+                .platforms(java.util.List.of(platform))
                 .imageUrl("zelda.png")
                 .build();
 
@@ -38,8 +38,9 @@ class GameEntityModelMapperTest {
         assertThat(entity.getName()).isEqualTo("Zelda");
         assertThat(entity.getDescription()).isEqualTo("Adventure");
         assertThat(entity.getImageUrl()).isEqualTo("zelda.png");
-        assertThat(entity.getPlatform().getId()).isEqualTo(platformId);
-        assertThat(entity.getPlatform().getName()).isEqualTo("Nintendo Switch");
+        assertThat(entity.getPlatforms()).hasSize(1);
+        assertThat(entity.getPlatforms().get(0).getId()).isEqualTo(platformId);
+        assertThat(entity.getPlatforms().get(0).getName()).isEqualTo("Nintendo Switch");
     }
 
     @Test
@@ -47,7 +48,7 @@ class GameEntityModelMapperTest {
         UUID platformId = UUID.randomUUID();
         UUID gameId = UUID.randomUUID();
         PlatformEntity platform = new PlatformEntity(platformId, "Nintendo Switch", "Console", "switch.png");
-        GameEntity entity = new GameEntity(gameId, "Zelda", "Adventure", "zelda.png", platform);
+        GameEntity entity = new GameEntity(gameId, "Zelda", "Adventure", "zelda.png", java.util.List.of(platform));
 
         Game game = mapper.entityToModel(entity);
 
@@ -55,7 +56,8 @@ class GameEntityModelMapperTest {
         assertThat(game.getName()).isEqualTo("Zelda");
         assertThat(game.getDescription()).isEqualTo("Adventure");
         assertThat(game.getImageUrl()).isEqualTo("zelda.png");
-        assertThat(game.getPlatform().getId()).isEqualTo(platformId);
-        assertThat(game.getPlatform().getName()).isEqualTo("Nintendo Switch");
+        assertThat(game.getPlatforms()).hasSize(1);
+        assertThat(game.getPlatforms().get(0).getId()).isEqualTo(platformId);
+        assertThat(game.getPlatforms().get(0).getName()).isEqualTo("Nintendo Switch");
     }
 }
