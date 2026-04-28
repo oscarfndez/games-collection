@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -59,6 +60,18 @@ public class JwtServiceImpl implements JwtService {
         }
 
         return List.of();
+    }
+
+    @Override
+    public UUID extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        Object userIdClaim = claims.get("user_id");
+
+        if (userIdClaim == null) {
+            return null;
+        }
+
+        return UUID.fromString(userIdClaim.toString());
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.oscarfndez.framework.core.services.auth;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface JwtService {
     String extractUserName(String token);
@@ -10,6 +11,8 @@ public interface JwtService {
     String extractRole(String token);
 
     List<String> extractRoles(String token);
+
+    UUID extractUserId(String token);
 
     String generateToken(UserDetails userDetails);
 

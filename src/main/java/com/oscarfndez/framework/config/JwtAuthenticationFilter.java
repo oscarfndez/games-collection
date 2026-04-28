@@ -23,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -44,15 +45,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
         final List<String> roles;
+        final UUID userId;
         try {
             jwt = extractToken(authHeader);
             userEmail = jwtService.extractUserName(jwt);
             roles = jwtService.extractRoles(jwt);
+            userId = jwtService.extractUserId(jwt);
         } catch (JwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT received for {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
             filterChain.doFilter(request, response);
             return;
         }
+
+        request.setAttribute("authenticatedUserId", userId);
 
         if (StringUtils.hasText(userEmail)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
