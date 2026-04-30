@@ -50,6 +50,10 @@ public class GameItemRepository {
         return gameItemEntityModelMapper.entityToModel(gameItemJpaRepository.save(entity));
     }
 
+    public boolean existsByIdAndUserId(UUID id, UUID userId) {
+        return gameItemJpaRepository.existsByIdAndUserId(id, userId);
+    }
+
     public void deleteOne(UUID id, UUID userId) {
         gameItemJpaRepository.deleteByIdAndUserId(id, userId);
     }

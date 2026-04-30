@@ -39,5 +39,7 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
             Pageable pageable
     );
 
+    boolean existsByIdAndUserId(UUID id, UUID userId);
+
     void deleteByIdAndUserId(UUID id, UUID userId);
 }

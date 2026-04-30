@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +72,19 @@ public class GameItemController {
                 )),
                 HttpStatus.CREATED
         );
+    }
+
+    @PutMapping
+    public ResponseEntity<GameItemDto> updateCollectionItem(@RequestParam UUID id,
+            @RequestBody GameItemDto gameItemDto,
+            HttpServletRequest request) {
+        UUID userId = authenticatedUserId(request);
+        return ResponseEntity.ok(gameItemModelDtoMapper.mapToDTO(gameItemService.updateCollectionItem(
+                id,
+                userId,
+                gameItemDto.getGameId(),
+                gameItemDto.getPlatformId()
+        )));
     }
 
     @DeleteMapping

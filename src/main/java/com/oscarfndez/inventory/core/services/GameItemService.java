@@ -32,6 +32,20 @@ public class GameItemService {
     }
 
     public GameItem addToCollection(UUID userId, UUID gameId, UUID platformId) {
+        validateGameAvailableOnPlatform(gameId, platformId);
+        return gameItemRepository.save(UUID.randomUUID(), userId, gameId, platformId);
+    }
+
+    public GameItem updateCollectionItem(UUID id, UUID userId, UUID gameId, UUID platformId) {
+        if (!gameItemRepository.existsByIdAndUserId(id, userId)) {
+            throw new IllegalArgumentException("Collection item not found.");
+        }
+
+        validateGameAvailableOnPlatform(gameId, platformId);
+        return gameItemRepository.save(id, userId, gameId, platformId);
+    }
+
+    private void validateGameAvailableOnPlatform(UUID gameId, UUID platformId) {
         Game game = gameRepository.retrieveOne(gameId);
         boolean gameAvailableOnPlatform = game.getPlatforms().stream()
                 .anyMatch(platform -> platform.getId().equals(platformId));
@@ -39,8 +53,6 @@ public class GameItemService {
         if (!gameAvailableOnPlatform) {
             throw new IllegalArgumentException("Game is not available on selected platform.");
         }
-
-        return gameItemRepository.save(UUID.randomUUID(), userId, gameId, platformId);
     }
 
     public void removeFromCollection(UUID id, UUID userId) {
