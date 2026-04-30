@@ -1,6 +1,8 @@
 package com.oscarfndez.inventory.ports.repositories;
 
 import com.oscarfndez.inventory.adapters.persistence.entities.GameItemEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,23 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
         order by g.name asc, p.name asc
     """)
     List<GameItemEntity> findByUserId(@Param("userId") UUID userId);
+
+    @Query("""
+        select gi
+        from GameItemEntity gi
+        join gi.game g
+        join gi.platform p
+        where gi.userId = :userId
+          and (:search is null or :search = ''
+             or lower(g.name) like lower(concat('%', :search, '%'))
+             or lower(g.description) like lower(concat('%', :search, '%'))
+             or lower(p.name) like lower(concat('%', :search, '%')))
+    """)
+    Page<GameItemEntity> searchByUserId(
+            @Param("userId") UUID userId,
+            @Param("search") String search,
+            Pageable pageable
+    );
 
     void deleteByIdAndUserId(UUID id, UUID userId);
 }

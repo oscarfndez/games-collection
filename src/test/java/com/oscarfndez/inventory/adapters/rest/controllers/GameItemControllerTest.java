@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -38,13 +39,18 @@ class GameItemControllerTest {
         UUID userId = UUID.randomUUID();
         GameItem gameItem = gameItem(userId);
         GameItemDto dto = dto(gameItem);
-        when(gameItemService.retrieveByUserId(userId)).thenReturn(List.of(gameItem));
+        when(gameItemService.retrievePage(userId, "elden", "game", "asc", 0, 10))
+                .thenReturn(new PageImpl<>(List.of(gameItem)));
         when(gameItemModelDtoMapper.mapToDTO(gameItem)).thenReturn(dto);
 
-        var response = gameItemController.loadCollection(requestWithUserId(userId));
+        var response = gameItemController.loadCollection("elden", "game", "asc", 0, 10, requestWithUserId(userId));
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).containsExactly(dto);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).containsExactly(dto);
+        assertThat(response.getBody().getPage()).isZero();
+        assertThat(response.getBody().getSize()).isEqualTo(1);
+        assertThat(response.getBody().getTotalElements()).isEqualTo(1);
     }
 
     @Test

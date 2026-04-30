@@ -1,10 +1,13 @@
 package com.oscarfndez.inventory.adapters.rest.controllers;
 
+import com.oscarfndez.framework.core.model.dto.PageResponseDto;
 import com.oscarfndez.inventory.adapters.rest.dtos.GameItemDto;
 import com.oscarfndez.inventory.adapters.rest.dtos.mappers.GameItemModelDtoMapper;
+import com.oscarfndez.inventory.core.model.GameItem;
 import com.oscarfndez.inventory.core.services.GameItemService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,12 +32,31 @@ public class GameItemController {
     private final GameItemModelDtoMapper gameItemModelDtoMapper;
 
     @GetMapping
-    public ResponseEntity<List<GameItemDto>> loadCollection(HttpServletRequest request) {
+    public ResponseEntity<PageResponseDto<GameItemDto>> loadCollection(
+            @RequestParam(required = false) final String search,
+            @RequestParam(required = false, defaultValue = "game") final String sortField,
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir,
+            @RequestParam(required = false, defaultValue = "0") final int page,
+            @RequestParam(required = false, defaultValue = "10") final int size,
+            HttpServletRequest request
+    ) {
         UUID userId = authenticatedUserId(request);
-        return ResponseEntity.ok(gameItemService.retrieveByUserId(userId)
+        Page<GameItem> resultPage = gameItemService.retrievePage(userId, search, sortField, sortDir, page, size);
+
+        List<GameItemDto> content = resultPage.getContent()
                 .stream()
                 .map(gameItemModelDtoMapper::mapToDTO)
-                .toList());
+                .toList();
+
+        return ResponseEntity.ok(
+                new PageResponseDto<>(
+                        content,
+                        resultPage.getNumber(),
+                        resultPage.getSize(),
+                        resultPage.getTotalElements(),
+                        resultPage.getTotalPages()
+                )
+        );
     }
 
     @PostMapping

@@ -5,6 +5,10 @@ import com.oscarfndez.inventory.core.model.GameItem;
 import com.oscarfndez.inventory.ports.repositories.GameItemRepository;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +25,12 @@ public class GameItemService {
         return gameItemRepository.findByUserId(userId);
     }
 
+    public Page<GameItem> retrievePage(UUID userId, String search, String sortField, String sortDir, int page, int size) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, mapSortField(sortField)));
+        return gameItemRepository.searchByUserId(userId, normalizeSearch(search), pageable);
+    }
+
     public GameItem addToCollection(UUID userId, UUID gameId, UUID platformId) {
         Game game = gameRepository.retrieveOne(gameId);
         boolean gameAvailableOnPlatform = game.getPlatforms().stream()
@@ -35,5 +45,20 @@ public class GameItemService {
 
     public void removeFromCollection(UUID id, UUID userId) {
         gameItemRepository.deleteOne(id, userId);
+    }
+
+    private String normalizeSearch(String search) {
+        if (search == null || search.isBlank()) {
+            return null;
+        }
+
+        return search.trim();
+    }
+
+    private String mapSortField(String sortField) {
+        return switch (sortField) {
+            case "platform" -> "platform.name";
+            default -> "game.name";
+        };
     }
 }

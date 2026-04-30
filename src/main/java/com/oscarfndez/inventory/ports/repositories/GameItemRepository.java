@@ -8,6 +8,8 @@ import com.oscarfndez.inventory.core.model.GameItem;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,11 @@ public class GameItemRepository {
                 .stream()
                 .map(gameItemEntityModelMapper::entityToModel)
                 .toList();
+    }
+
+    public Page<GameItem> searchByUserId(UUID userId, String search, Pageable pageable) {
+        return gameItemJpaRepository.searchByUserId(userId, search, pageable)
+                .map(gameItemEntityModelMapper::entityToModel);
     }
 
     public GameItem save(UUID id, UUID userId, UUID gameId, UUID platformId) {

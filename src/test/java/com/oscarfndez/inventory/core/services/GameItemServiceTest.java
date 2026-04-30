@@ -11,6 +11,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +46,24 @@ class GameItemServiceTest {
         when(gameItemRepository.findByUserId(userId)).thenReturn(collection);
 
         assertThat(gameItemService.retrieveByUserId(userId)).isSameAs(collection);
+    }
+
+    @Test
+    void retrievePageBuildsPageableWithMappedSortAndTrimmedSearch() {
+        UUID userId = UUID.randomUUID();
+        Page<GameItem> page = new PageImpl<>(List.of(gameItem(userId, game(), platform())));
+        when(gameItemRepository.searchByUserId(any(UUID.class), any(), any(Pageable.class))).thenReturn(page);
+
+        assertThat(gameItemService.retrievePage(userId, " elden ", "platform", "desc", 1, 5)).isSameAs(page);
+
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        verify(gameItemRepository).searchByUserId(eq(userId), eq("elden"), pageableCaptor.capture());
+        Pageable pageable = pageableCaptor.getValue();
+        assertThat(pageable.getPageNumber()).isEqualTo(1);
+        assertThat(pageable.getPageSize()).isEqualTo(5);
+        Sort.Order order = pageable.getSort().getOrderFor("platform.name");
+        assertThat(order).isNotNull();
+        assertThat(order.getDirection()).isEqualTo(Sort.Direction.DESC);
     }
 
     @Test
