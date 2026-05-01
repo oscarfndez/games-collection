@@ -35,8 +35,22 @@ class AuthorizationServiceTest {
     }
 
     @Test
-    void hasRoleReturnsFalseWhenRoleDoesNotMatch() {
+    void hasRoleReturnsTrueWhenAdminRequiresUserRole() {
         setAuthenticatedUserWithAuthority("ADMIN");
+
+        assertThat(authorizationService.hasRole("USER")).isTrue();
+    }
+
+    @Test
+    void hasRoleReturnsFalseWhenNonAdminRoleDoesNotMatch() {
+        setAuthenticatedUserWithAuthority("USER");
+
+        assertThat(authorizationService.hasRole("ADMIN")).isFalse();
+    }
+
+    @Test
+    void hasRoleReturnsFalseWhenRoleDoesNotMatch() {
+        setAuthenticatedUserWithAuthority("PLATFORM_MANAGER");
 
         assertThat(authorizationService.hasRole("USER")).isFalse();
     }
