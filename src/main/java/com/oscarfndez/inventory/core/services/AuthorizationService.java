@@ -37,6 +37,9 @@ public class AuthorizationService {
 
         return authorities.stream()
                 .map(GrantedAuthority::getAuthority)
-                .anyMatch(auth -> auth.equals(role) || auth.equals("ROLE_" + role));
+                .anyMatch(auth -> auth.equals(role)
+                        || auth.equals("ROLE_" + role)
+                        || auth.equals("ADMIN")
+                        || auth.equals("ROLE_ADMIN"));
     }
 }

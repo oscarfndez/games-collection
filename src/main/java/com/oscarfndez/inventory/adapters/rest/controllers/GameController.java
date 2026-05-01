@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping({"/api/game", "/gamesCollection/api/game"})
 @AllArgsConstructor
-@PreAuthorize("@authorizationService.hasRole('USER')")
 public class GameController {
 
     private final GameModelDtoMapper gameModelDtoMapper;
@@ -27,6 +26,7 @@ public class GameController {
 
 
     @GetMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<GameDto> loadGame(@RequestParam final UUID id) {
         return new ResponseEntity<>(
                 gameModelDtoMapper.mapToDTO(gameService.retrieveOne(id))
@@ -34,6 +34,7 @@ public class GameController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<PageResponseDto<GameDto>> loadAllGames(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "name") final String sortField,
@@ -60,6 +61,7 @@ public class GameController {
     }
 
     @PostMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<GameDto> createGame(@RequestBody GameDto gameDto) {
 
         return new ResponseEntity<>(
@@ -76,6 +78,7 @@ public class GameController {
     }
 
     @PutMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<GameDto> updateGame(@RequestParam final UUID id, @RequestBody GameDto gameDto) {
         return new ResponseEntity<>(
                 gameModelDtoMapper.mapToDTO(
@@ -92,6 +95,7 @@ public class GameController {
     }
 
     @DeleteMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<Void> deleteGame(@RequestParam final UUID id) {
         gameService.deleteOne(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

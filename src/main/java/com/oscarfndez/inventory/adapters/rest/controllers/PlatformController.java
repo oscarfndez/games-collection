@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping({"/api/platform", "/gamesCollection/api/platform"})
 @AllArgsConstructor
-@PreAuthorize("@authorizationService.hasRole('USER')")
 public class PlatformController {
 
     private final PlatformModelDtoMapper platformModelDtoMapper;
     private final PlatformService platformService;
 
     @GetMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<PlatformDto> loadPlatform(@RequestParam final UUID id) {
 
         return new ResponseEntity<>(
@@ -34,6 +34,7 @@ public class PlatformController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<PageResponseDto<PlatformDto>> loadAllPlatforms(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "name") final String sortField,
@@ -60,6 +61,7 @@ public class PlatformController {
     }
 
     @PostMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<PlatformDto> createPlatform(@RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.createPlatform(platformDto.getName(), platformDto.getDescription(), platformDto.getImageUrl())
@@ -67,6 +69,7 @@ public class PlatformController {
     }
 
     @PutMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<PlatformDto> updatePlatform(@RequestParam final UUID id, @RequestBody PlatformDto platformDto) {
         return new ResponseEntity<>(
                 platformModelDtoMapper.mapToDTO(platformService.updatePlatform(id, platformDto.getName(), platformDto.getDescription(),platformDto.getImageUrl())
@@ -74,6 +77,7 @@ public class PlatformController {
     }
 
     @DeleteMapping
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<Void> deletePlatform(@RequestParam final UUID id) {
         platformService.deleteOne(id);
         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
