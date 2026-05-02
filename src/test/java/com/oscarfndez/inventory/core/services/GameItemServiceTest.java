@@ -108,12 +108,24 @@ class GameItemServiceTest {
         verify(gameItemRepository).deleteOne(gameItemId, userId);
     }
 
+    @Test
+    void deactivateCollectionByUserIdDelegatesToRepository() {
+        UUID userId = UUID.randomUUID();
+        when(gameItemRepository.deactivateByUserId(userId)).thenReturn(3);
+
+        int deactivatedItems = gameItemService.deactivateCollectionByUserId(userId);
+
+        assertThat(deactivatedItems).isEqualTo(3);
+        verify(gameItemRepository).deactivateByUserId(userId);
+    }
+
     private static GameItem gameItem(UUID userId, Game game, Platform platform) {
         return GameItem.builder()
                 .id(UUID.randomUUID())
                 .userId(userId)
                 .game(game)
                 .platform(platform)
+                .active(true)
                 .build();
     }
 

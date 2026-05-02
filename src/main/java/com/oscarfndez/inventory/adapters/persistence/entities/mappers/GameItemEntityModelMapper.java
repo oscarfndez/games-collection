@@ -17,8 +17,8 @@ public class GameItemEntityModelMapper {
                 entity.getId(),
                 entity.getUserId(),
                 gameEntityModelMapper.entityToModel(entity.getGame()),
-                platformEntityModelMapper.entityToModel(entity.getPlatform())
+                platformEntityModelMapper.entityToModel(entity.getPlatform()),
+                entity.isActive()
         );
     }
 }
-

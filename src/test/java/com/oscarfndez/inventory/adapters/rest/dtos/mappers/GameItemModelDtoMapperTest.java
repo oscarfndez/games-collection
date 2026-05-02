@@ -34,6 +34,7 @@ class GameItemModelDtoMapperTest {
                 .userId(UUID.randomUUID())
                 .game(game)
                 .platform(platform)
+                .active(true)
                 .build();
 
         var dto = mapper.mapToDTO(gameItem);

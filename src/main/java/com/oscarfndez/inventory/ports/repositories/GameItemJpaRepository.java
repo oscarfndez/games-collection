@@ -18,6 +18,7 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
         join fetch gi.platform p
         left join fetch g.platforms gp
         where gi.userId = :userId
+          and gi.active = true
         order by g.name asc, p.name asc
     """)
     List<GameItemEntity> findByUserId(@Param("userId") UUID userId);
@@ -28,6 +29,7 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
         join gi.game g
         join gi.platform p
         where gi.userId = :userId
+          and gi.active = true
           and (:search is null or :search = ''
              or lower(g.name) like lower(concat('%', :search, '%'))
              or lower(g.description) like lower(concat('%', :search, '%'))
@@ -39,7 +41,16 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
             Pageable pageable
     );
 
-    boolean existsByIdAndUserId(UUID id, UUID userId);
+    boolean existsByIdAndUserIdAndActiveTrue(UUID id, UUID userId);
 
     void deleteByIdAndUserId(UUID id, UUID userId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.data.jpa.repository.Query("""
+        update GameItemEntity gi
+        set gi.active = false
+        where gi.userId = :userId
+          and gi.active = true
+    """)
+    int deactivateByUserId(@Param("userId") UUID userId);
 }

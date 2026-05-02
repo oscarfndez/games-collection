@@ -59,6 +59,10 @@ public class GameItemService {
         gameItemRepository.deleteOne(id, userId);
     }
 
+    public int deactivateCollectionByUserId(UUID userId) {
+        return gameItemRepository.deactivateByUserId(userId);
+    }
+
     private String normalizeSearch(String search) {
         if (search == null || search.isBlank()) {
             return null;

@@ -14,5 +14,5 @@ public class GameItem {
     private UUID userId;
     private Game game;
     private Platform platform;
+    private boolean active;
 }
-

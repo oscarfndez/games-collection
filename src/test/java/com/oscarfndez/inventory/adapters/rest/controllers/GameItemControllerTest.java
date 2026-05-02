@@ -112,6 +112,7 @@ class GameItemControllerTest {
                 .userId(userId)
                 .game(game)
                 .platform(platform)
+                .active(true)
                 .build();
     }
 

@@ -1,11 +1,16 @@
 package com.oscarfndez.inventory.core.events;
 
+import com.oscarfndez.inventory.core.services.GameItemService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserLifecycleEventHandler {
+
+    private final GameItemService gameItemService;
 
     public void handle(UserLifecycleEvent event) {
         switch (event.eventType()) {
@@ -25,6 +30,13 @@ public class UserLifecycleEventHandler {
     }
 
     private void handleUserDeleted(UserLifecycleEvent event) {
-        log.info("Received user deleted event userId={} email={} role={}", event.userId(), event.email(), event.role());
+        int deactivatedItems = gameItemService.deactivateCollectionByUserId(event.userId());
+        log.info(
+                "Received user deleted event userId={} email={} role={} deactivatedCollectionItems={}",
+                event.userId(),
+                event.email(),
+                event.role(),
+                deactivatedItems
+        );
     }
 }

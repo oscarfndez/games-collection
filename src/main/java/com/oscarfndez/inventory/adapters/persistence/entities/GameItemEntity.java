@@ -29,5 +29,6 @@ public class GameItemEntity {
     @ManyToOne
     @JoinColumn(name = "platform_id", referencedColumnName = "id")
     private PlatformEntity platform;
-}
 
+    private boolean active;
+}

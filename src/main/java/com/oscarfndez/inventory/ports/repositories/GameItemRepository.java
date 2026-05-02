@@ -44,17 +44,22 @@ public class GameItemRepository {
                 id,
                 userId,
                 entityManager.getReference(GameEntity.class, gameId),
-                entityManager.getReference(PlatformEntity.class, platformId)
+                entityManager.getReference(PlatformEntity.class, platformId),
+                true
         );
 
         return gameItemEntityModelMapper.entityToModel(gameItemJpaRepository.save(entity));
     }
 
     public boolean existsByIdAndUserId(UUID id, UUID userId) {
-        return gameItemJpaRepository.existsByIdAndUserId(id, userId);
+        return gameItemJpaRepository.existsByIdAndUserIdAndActiveTrue(id, userId);
     }
 
     public void deleteOne(UUID id, UUID userId) {
         gameItemJpaRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    public int deactivateByUserId(UUID userId) {
+        return gameItemJpaRepository.deactivateByUserId(userId);
     }
 }
