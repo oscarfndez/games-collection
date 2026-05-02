@@ -4,6 +4,7 @@ import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
 import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
+import com.oscarfndez.inventory.ports.repositories.StudioRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -32,6 +33,9 @@ class GameServiceTest {
 
     @Mock
     private PlatformRepository platformRepository;
+
+    @Mock
+    private StudioRepository studioRepository;
 
     @InjectMocks
     private GameService gameService;

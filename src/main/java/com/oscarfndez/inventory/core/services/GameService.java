@@ -3,6 +3,7 @@ package com.oscarfndez.inventory.core.services;
 import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
 import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
+import com.oscarfndez.inventory.ports.repositories.StudioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final PlatformRepository platformRepository;
+    private final StudioRepository studioRepository;
 
     public Game retrieveOne(UUID id) {
         return gameRepository.retrieveOne(id);
@@ -62,6 +64,10 @@ public class GameService {
     }
 
     public Game create(String name, String description, List<UUID> platformIds, String imageUrl) {
+        return create(name, description, platformIds, imageUrl, null);
+    }
+
+    public Game create(String name, String description, List<UUID> platformIds, String imageUrl, UUID studioId) {
         return gameRepository.save(
                 Game.builder()
                         .id(UUID.randomUUID())
@@ -69,6 +75,7 @@ public class GameService {
                         .description(description)
                         .imageUrl(imageUrl)
                         .platforms(platformRepository.retrieveMany(platformIds))
+                        .studio(studioId == null ? null : studioRepository.retrieveOne(studioId))
                         .build());
     }
 
@@ -77,6 +84,10 @@ public class GameService {
     }
 
     public Game updateGame(UUID id, String name, String description, List<UUID> platformIds, String imageUrl) {
+        return updateGame(id, name, description, platformIds, imageUrl, null);
+    }
+
+    public Game updateGame(UUID id, String name, String description, List<UUID> platformIds, String imageUrl, UUID studioId) {
         return gameRepository.save(
                 Game.builder()
                         .id(id)
@@ -84,6 +95,7 @@ public class GameService {
                         .description(description)
                         .imageUrl(imageUrl)
                         .platforms(platformRepository.retrieveMany(platformIds))
+                        .studio(studioId == null ? null : studioRepository.retrieveOne(studioId))
                         .build());
     }
 

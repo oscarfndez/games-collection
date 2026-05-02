@@ -70,7 +70,8 @@ public class GameController {
                                 gameDto.getName(),
                                 gameDto.getDescription(),
                                 resolvePlatformIds(gameDto),
-                                gameDto.getImageUrl()
+                                gameDto.getImageUrl(),
+                                gameDto.getStudioId()
                         )
                 ),
                 HttpStatus.CREATED
@@ -87,7 +88,8 @@ public class GameController {
                                 gameDto.getName(),
                                 gameDto.getDescription(),
                                 resolvePlatformIds(gameDto),
-                                gameDto.getImageUrl()
+                                gameDto.getImageUrl(),
+                                gameDto.getStudioId()
                         )
                 ),
                 HttpStatus.OK

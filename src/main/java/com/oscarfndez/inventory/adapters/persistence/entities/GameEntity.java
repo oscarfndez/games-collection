@@ -23,6 +23,10 @@ public class GameEntity {
     private String description;
     private String imageUrl;
 
+    @ManyToOne
+    @JoinColumn(name = "studio_id")
+    private StudioEntity studio;
+
     @ManyToMany
     @JoinTable(
             name = "game_platform",

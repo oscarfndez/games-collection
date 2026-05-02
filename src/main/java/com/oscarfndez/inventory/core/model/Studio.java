@@ -10,11 +10,12 @@ import java.util.UUID;
 @Builder
 @Data
 @AllArgsConstructor
-public class Game {
+public class Studio {
+
     private UUID id;
     private String name;
     private String description;
-    private List<Platform> platforms;
-    private String imageUrl;
-    private Studio studio;
+    private String location;
+    private Boolean firstParty;
+    private List<Game> games;
 }

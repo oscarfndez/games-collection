@@ -26,6 +26,8 @@ public class GameModelDtoMapper {
                 .platformIds(platformIds)
                 .platformNames(platformNames)
                 .imageUrl(game.getImageUrl())
+                .studioId(game.getStudio() == null ? null : game.getStudio().getId())
+                .studioName(game.getStudio() == null ? null : game.getStudio().getName())
                 .build();
     }
 }

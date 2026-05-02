@@ -32,4 +32,8 @@ public class GameDto {
     private List<String> platformNames;
     @JsonProperty("image_url")
     private String imageUrl;
+    @JsonProperty("studio_id")
+    private UUID studioId;
+    @JsonProperty("studio_name")
+    private String studioName;
 }

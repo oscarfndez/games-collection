@@ -2,6 +2,7 @@ package com.oscarfndez.inventory.ports.repositories;
 
 import com.oscarfndez.inventory.adapters.persistence.entities.GameEntity;
 import com.oscarfndez.inventory.adapters.persistence.entities.PlatformEntity;
+import com.oscarfndez.inventory.adapters.persistence.entities.StudioEntity;
 import com.oscarfndez.inventory.adapters.persistence.entities.mappers.GameEntityModelMapper;
 import com.oscarfndez.inventory.adapters.persistence.exceptions.ResourceNotFoundException;
 import com.oscarfndez.inventory.core.model.Game;
@@ -49,6 +50,9 @@ public class GameRepository {
         entity.setPlatforms(game.getPlatforms().stream()
                 .map(platform -> entityManager.getReference(PlatformEntity.class, platform.getId()))
                 .toList());
+        entity.setStudio(game.getStudio() == null
+                ? null
+                : entityManager.getReference(StudioEntity.class, game.getStudio().getId()));
 
         return gameEntityModelMapper.entityToModel(
                 gameJpaRepository.save(entity)
