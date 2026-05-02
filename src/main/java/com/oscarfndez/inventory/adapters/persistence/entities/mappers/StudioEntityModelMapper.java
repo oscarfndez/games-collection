@@ -2,7 +2,6 @@ package com.oscarfndez.inventory.adapters.persistence.entities.mappers;
 
 import com.oscarfndez.inventory.adapters.persistence.entities.StudioEntity;
 import com.oscarfndez.inventory.core.model.Game;
-import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.core.model.Studio;
 import org.springframework.stereotype.Component;
 
@@ -38,16 +37,7 @@ public class StudioEntityModelMapper {
                                         .name(gameEntity.getName())
                                         .description(gameEntity.getDescription())
                                         .imageUrl(gameEntity.getImageUrl())
-                                        .platforms(gameEntity.getPlatforms() == null
-                                                ? List.of()
-                                                : gameEntity.getPlatforms().stream()
-                                                        .map(platformEntity -> Platform.builder()
-                                                                .id(platformEntity.getId())
-                                                                .name(platformEntity.getName())
-                                                                .description(platformEntity.getDescription())
-                                                                .imageUrl(platformEntity.getImageUrl())
-                                                                .build())
-                                                        .toList())
+                                        .platforms(List.of())
                                         .build())
                                 .toList()
         );

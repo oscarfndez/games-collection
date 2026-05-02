@@ -14,8 +14,7 @@ public interface StudioJpaRepository extends JpaRepository<StudioEntity, UUID> {
     @Query("""
         select distinct s
         from StudioEntity s
-        left join fetch s.games g
-        left join fetch g.platforms
+        left join fetch s.games
         where s.id = :id
         """)
     StudioEntity findOneWithGames(@Param("id") UUID id);
