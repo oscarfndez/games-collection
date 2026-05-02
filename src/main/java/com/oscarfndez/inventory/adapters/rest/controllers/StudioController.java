@@ -31,13 +31,13 @@ public class StudioController {
     private final StudioService studioService;
 
     @GetMapping
-    @PreAuthorize("@authorizationService.hasRole('USER')")
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<StudioDto> loadStudio(@RequestParam final UUID id) {
         return ResponseEntity.ok(studioModelDtoMapper.mapToDTO(studioService.retrieveOne(id)));
     }
 
     @GetMapping("/all")
-    @PreAuthorize("@authorizationService.hasRole('USER')")
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
     public ResponseEntity<PageResponseDto<StudioDto>> loadAllStudios(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "name") final String sortField,
