@@ -77,7 +77,7 @@ class GameControllerTest {
                 .build();
         Game createdGame = game(gameId);
         GameDto responseDto = gameDto(gameId);
-        when(gameService.create("Zelda", "Adventure", List.of(platformId), "zelda.png")).thenReturn(createdGame);
+        when(gameService.create("Zelda", "Adventure", List.of(platformId), "zelda.png", null)).thenReturn(createdGame);
         when(gameModelDtoMapper.mapToDTO(createdGame)).thenReturn(responseDto);
 
         var response = gameController.createGame(request);
@@ -98,7 +98,7 @@ class GameControllerTest {
                 .build();
         Game updatedGame = game(gameId);
         GameDto responseDto = gameDto(gameId);
-        when(gameService.updateGame(gameId, "Zelda", "Adventure", List.of(platformId), "zelda.png")).thenReturn(updatedGame);
+        when(gameService.updateGame(gameId, "Zelda", "Adventure", List.of(platformId), "zelda.png", null)).thenReturn(updatedGame);
         when(gameModelDtoMapper.mapToDTO(updatedGame)).thenReturn(responseDto);
 
         var response = gameController.updateGame(gameId, request);
