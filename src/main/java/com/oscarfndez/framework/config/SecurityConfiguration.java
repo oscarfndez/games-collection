@@ -38,7 +38,9 @@ public class SecurityConfiguration {
                                 "/error",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/actuator/health",
+                                "/actuator/prometheus"
                         )
                         .permitAll()
                         .anyRequest()
