@@ -77,6 +77,16 @@ public class GameRepository {
 
     }
 
+    public Page<Game> searchByPlatformId(UUID platformId, String search, Pageable pageable) {
+        return gameJpaRepository.searchByPlatformId(platformId, search, pageable)
+                .map(gameEntityModelMapper::entityToModel);
+    }
+
+    public Page<Game> searchByStudioId(UUID studioId, String search, Pageable pageable) {
+        return gameJpaRepository.searchByStudioId(studioId, search, pageable)
+                .map(gameEntityModelMapper::entityToModel);
+    }
+
     public List<Game> findAllSorted(String sortField, boolean asc) {
 
         String direction = asc ? "asc" : "desc";

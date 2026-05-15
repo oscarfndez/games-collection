@@ -1,9 +1,13 @@
 package com.oscarfndez.inventory.adapters.rest.controllers;
 
 import com.oscarfndez.framework.core.model.dto.PageResponseDto;
+import com.oscarfndez.inventory.adapters.rest.dtos.GameDto;
 import com.oscarfndez.inventory.adapters.rest.dtos.StudioDto;
+import com.oscarfndez.inventory.adapters.rest.dtos.mappers.GameModelDtoMapper;
 import com.oscarfndez.inventory.adapters.rest.dtos.mappers.StudioModelDtoMapper;
+import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.core.model.Studio;
+import com.oscarfndez.inventory.core.services.GameService;
 import com.oscarfndez.inventory.core.services.StudioService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +32,9 @@ import java.util.UUID;
 public class StudioController {
 
     private final StudioModelDtoMapper studioModelDtoMapper;
+    private final GameModelDtoMapper gameModelDtoMapper;
     private final StudioService studioService;
+    private final GameService gameService;
 
     @GetMapping
     @PreAuthorize("@authorizationService.hasRole('ADMIN')")
@@ -48,6 +54,30 @@ public class StudioController {
         Page<Studio> resultPage = studioService.retrievePage(search, sortField, sortDir, page, size);
         List<StudioDto> content = resultPage.getContent().stream()
                 .map(studioModelDtoMapper::mapToDTO)
+                .toList();
+
+        return ResponseEntity.ok(new PageResponseDto<>(
+                content,
+                resultPage.getNumber(),
+                resultPage.getSize(),
+                resultPage.getTotalElements(),
+                resultPage.getTotalPages()
+        ));
+    }
+
+    @GetMapping("/games")
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
+    public ResponseEntity<PageResponseDto<GameDto>> loadStudioGames(
+            @RequestParam final UUID id,
+            @RequestParam(required = false) final String search,
+            @RequestParam(required = false, defaultValue = "name") final String sortField,
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir,
+            @RequestParam(required = false, defaultValue = "0") final int page,
+            @RequestParam(required = false, defaultValue = "10") final int size
+    ) {
+        Page<Game> resultPage = gameService.retrievePageByStudio(id, search, sortField, sortDir, page, size);
+        List<GameDto> content = resultPage.getContent().stream()
+                .map(gameModelDtoMapper::mapToDTO)
                 .toList();
 
         return ResponseEntity.ok(new PageResponseDto<>(

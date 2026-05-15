@@ -67,6 +67,24 @@ public class GameService {
         return gameRepository.search(search == null ? "" : search.trim(), pageable);
     }
 
+    @Cacheable(cacheNames = "gamePages", key = "{'platform', #p0, #p1 == null ? '' : #p1.trim(), #p2, #p3, #p4, #p5}")
+    public Page<Game> retrievePageByPlatform(UUID platformId, String search, String sortField, String sortDir, int page, int size) {
+        String mappedSortField = mapSortField(sortField);
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, mappedSortField));
+
+        return gameRepository.searchByPlatformId(platformId, search == null ? "" : search.trim(), pageable);
+    }
+
+    @Cacheable(cacheNames = "gamePages", key = "{'studio', #p0, #p1 == null ? '' : #p1.trim(), #p2, #p3, #p4, #p5}")
+    public Page<Game> retrievePageByStudio(UUID studioId, String search, String sortField, String sortDir, int page, int size) {
+        String mappedSortField = mapSortField(sortField);
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, mappedSortField));
+
+        return gameRepository.searchByStudioId(studioId, search == null ? "" : search.trim(), pageable);
+    }
+
     public Game create(String name, String description, UUID platformId, String imageUrl) {
         return create(name, description, List.of(platformId), imageUrl);
     }

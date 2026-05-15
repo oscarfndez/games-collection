@@ -36,4 +36,37 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
            or lower(s.name) like lower(concat('%', :search, '%')))
     """)
     Page<GameEntity> search(@Param("search") String search, Pageable pageable);
+
+    @Query("""
+        select distinct g
+        from GameEntity g
+        join g.platforms p
+        left join g.studio s
+        where p.id = :platformId
+          and (:search is null or :search = ''
+           or lower(g.name) like lower(concat('%', :search, '%'))
+           or lower(g.description) like lower(concat('%', :search, '%'))
+           or lower(s.name) like lower(concat('%', :search, '%')))
+    """)
+    Page<GameEntity> searchByPlatformId(
+            @Param("platformId") UUID platformId,
+            @Param("search") String search,
+            Pageable pageable
+    );
+
+    @Query("""
+        select distinct g
+        from GameEntity g
+        join g.platforms p
+        where g.studio.id = :studioId
+          and (:search is null or :search = ''
+           or lower(g.name) like lower(concat('%', :search, '%'))
+           or lower(g.description) like lower(concat('%', :search, '%'))
+           or lower(p.name) like lower(concat('%', :search, '%')))
+    """)
+    Page<GameEntity> searchByStudioId(
+            @Param("studioId") UUID studioId,
+            @Param("search") String search,
+            Pageable pageable
+    );
 }
