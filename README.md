@@ -163,12 +163,13 @@ User collection:
 
 ```http
 GET    /api/collection
+GET    /api/collection/user?userId={uuid}&page=0&size=10&sortField=game&sortDir=asc
 POST   /api/collection
 PUT    /api/collection?id={uuid}
 DELETE /api/collection?id={uuid}
 ```
 
-Security is JWT-based. Administrative inventory endpoints require `ADMIN`; personal collection endpoints require an authenticated user.
+Security is JWT-based. Administrative inventory endpoints require `ADMIN`; personal collection endpoints require an authenticated user. `GET /api/collection/user` is intended for administrative user-detail screens and requires `ADMIN`.
 
 ## Observability
 

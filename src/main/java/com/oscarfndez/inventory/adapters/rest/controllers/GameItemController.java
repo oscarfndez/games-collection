@@ -26,13 +26,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping({"/api/collection", "/gamesCollection/api/collection"})
 @AllArgsConstructor
-@PreAuthorize("@authorizationService.hasRole('USER')")
 public class GameItemController {
 
     private final GameItemService gameItemService;
     private final GameItemModelDtoMapper gameItemModelDtoMapper;
 
     @GetMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<PageResponseDto<GameItemDto>> loadCollection(
             @RequestParam(required = false) final String search,
             @RequestParam(required = false, defaultValue = "game") final String sortField,
@@ -60,7 +60,36 @@ public class GameItemController {
         );
     }
 
+    @GetMapping("/user")
+    @PreAuthorize("@authorizationService.hasRole('ADMIN')")
+    public ResponseEntity<PageResponseDto<GameItemDto>> loadCollectionByUserId(
+            @RequestParam final UUID userId,
+            @RequestParam(required = false) final String search,
+            @RequestParam(required = false, defaultValue = "game") final String sortField,
+            @RequestParam(required = false, defaultValue = "asc") final String sortDir,
+            @RequestParam(required = false, defaultValue = "0") final int page,
+            @RequestParam(required = false, defaultValue = "10") final int size
+    ) {
+        Page<GameItem> resultPage = gameItemService.retrievePage(userId, search, sortField, sortDir, page, size);
+
+        List<GameItemDto> content = resultPage.getContent()
+                .stream()
+                .map(gameItemModelDtoMapper::mapToDTO)
+                .toList();
+
+        return ResponseEntity.ok(
+                new PageResponseDto<>(
+                        content,
+                        resultPage.getNumber(),
+                        resultPage.getSize(),
+                        resultPage.getTotalElements(),
+                        resultPage.getTotalPages()
+                )
+        );
+    }
+
     @PostMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<GameItemDto> addToCollection(@RequestBody GameItemDto gameItemDto,
             HttpServletRequest request) {
         UUID userId = authenticatedUserId(request);
@@ -75,6 +104,7 @@ public class GameItemController {
     }
 
     @PutMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<GameItemDto> updateCollectionItem(@RequestParam UUID id,
             @RequestBody GameItemDto gameItemDto,
             HttpServletRequest request) {
@@ -88,6 +118,7 @@ public class GameItemController {
     }
 
     @DeleteMapping
+    @PreAuthorize("@authorizationService.hasRole('USER')")
     public ResponseEntity<Void> deleteFromCollection(@RequestParam UUID id, HttpServletRequest request) {
         UUID userId = authenticatedUserId(request);
         gameItemService.removeFromCollection(id, userId);

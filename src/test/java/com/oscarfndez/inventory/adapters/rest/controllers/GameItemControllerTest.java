@@ -54,6 +54,25 @@ class GameItemControllerTest {
     }
 
     @Test
+    void loadCollectionByUserIdUsesRequestedUserId() {
+        UUID userId = UUID.randomUUID();
+        GameItem gameItem = gameItem(userId);
+        GameItemDto dto = dto(gameItem);
+        when(gameItemService.retrievePage(userId, "elden", "game", "asc", 0, 10))
+                .thenReturn(new PageImpl<>(List.of(gameItem)));
+        when(gameItemModelDtoMapper.mapToDTO(gameItem)).thenReturn(dto);
+
+        var response = gameItemController.loadCollectionByUserId(userId, "elden", "game", "asc", 0, 10);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).containsExactly(dto);
+        assertThat(response.getBody().getPage()).isZero();
+        assertThat(response.getBody().getSize()).isEqualTo(1);
+        assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
     void addToCollectionIgnoresUserIdFromBodyAndUsesAuthenticatedUserId() {
         UUID authenticatedUserId = UUID.randomUUID();
         UUID maliciousUserId = UUID.randomUUID();
