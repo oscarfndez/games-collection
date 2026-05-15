@@ -5,6 +5,8 @@ import com.oscarfndez.inventory.core.model.GameItem;
 import com.oscarfndez.inventory.ports.repositories.GameItemRepository;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,17 +27,20 @@ public class GameItemService {
         return gameItemRepository.findByUserId(userId);
     }
 
+    @Cacheable(cacheNames = "collectionPages", key = "{#p0, #p1 == null ? '' : #p1.trim(), #p2, #p3, #p4, #p5}")
     public Page<GameItem> retrievePage(UUID userId, String search, String sortField, String sortDir, int page, int size) {
         Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, mapSortField(sortField)));
         return gameItemRepository.searchByUserId(userId, normalizeSearch(search), pageable);
     }
 
+    @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     public GameItem addToCollection(UUID userId, UUID gameId, UUID platformId) {
         validateGameAvailableOnPlatform(gameId, platformId);
         return gameItemRepository.save(UUID.randomUUID(), userId, gameId, platformId);
     }
 
+    @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     public GameItem updateCollectionItem(UUID id, UUID userId, UUID gameId, UUID platformId) {
         if (!gameItemRepository.existsByIdAndUserId(id, userId)) {
             throw new IllegalArgumentException("Collection item not found.");
@@ -55,10 +60,12 @@ public class GameItemService {
         }
     }
 
+    @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     public void removeFromCollection(UUID id, UUID userId) {
         gameItemRepository.deleteOne(id, userId);
     }
 
+    @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     public int deactivateCollectionByUserId(UUID userId) {
         return gameItemRepository.deactivateByUserId(userId);
     }
