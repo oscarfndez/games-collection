@@ -1,8 +1,12 @@
 package com.oscarfndez.inventory.adapters.rest.controllers;
 
+import com.oscarfndez.inventory.adapters.rest.dtos.GameDto;
 import com.oscarfndez.inventory.adapters.rest.dtos.PlatformDto;
+import com.oscarfndez.inventory.adapters.rest.dtos.mappers.GameModelDtoMapper;
 import com.oscarfndez.inventory.adapters.rest.dtos.mappers.PlatformModelDtoMapper;
+import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.core.model.Platform;
+import com.oscarfndez.inventory.core.services.GameService;
 import com.oscarfndez.inventory.core.services.PlatformService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +30,13 @@ class PlatformControllerTest {
     private PlatformModelDtoMapper platformModelDtoMapper;
 
     @Mock
+    private GameModelDtoMapper gameModelDtoMapper;
+
+    @Mock
     private PlatformService platformService;
+
+    @Mock
+    private GameService gameService;
 
     @InjectMocks
     private PlatformController platformController;
@@ -55,6 +65,39 @@ class PlatformControllerTest {
         when(platformModelDtoMapper.mapToDTO(platform)).thenReturn(dto);
 
         var response = platformController.loadAllPlatforms("switch", "name", "asc", 0, 10);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getContent()).containsExactly(dto);
+        assertThat(response.getBody().getPage()).isZero();
+        assertThat(response.getBody().getSize()).isEqualTo(1);
+        assertThat(response.getBody().getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    void loadPlatformGamesReturnsPagedGameDtoResponse() {
+        UUID platformId = UUID.randomUUID();
+        UUID gameId = UUID.randomUUID();
+        Game game = Game.builder()
+                .id(gameId)
+                .name("Zelda")
+                .description("Adventure")
+                .platforms(List.of(platform(platformId)))
+                .imageUrl("zelda.png")
+                .build();
+        GameDto dto = GameDto.builder()
+                .id(gameId)
+                .name("Zelda")
+                .description("Adventure")
+                .platformIds(List.of(platformId))
+                .platformNames(List.of("Nintendo Switch"))
+                .imageUrl("zelda.png")
+                .build();
+        when(gameService.retrievePageByPlatform(platformId, "zelda", "name", "asc", 0, 5))
+                .thenReturn(new PageImpl<>(List.of(game)));
+        when(gameModelDtoMapper.mapToDTO(game)).thenReturn(dto);
+
+        var response = platformController.loadPlatformGames(platformId, "zelda", "name", "asc", 0, 5);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
