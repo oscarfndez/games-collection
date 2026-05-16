@@ -1,5 +1,6 @@
 package com.oscarfndez.inventory.core.services;
 
+import com.oscarfndez.inventory.core.events.InventoryEntityDeletedEventPublisher;
 import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ class PlatformServiceTest {
 
     @Mock
     private PlatformRepository platformRepository;
+
+    @Mock
+    private InventoryEntityDeletedEventPublisher inventoryEntityDeletedEventPublisher;
 
     @InjectMocks
     private PlatformService platformService;
@@ -90,10 +94,14 @@ class PlatformServiceTest {
     @Test
     void deleteOneDelegatesToRepository() {
         UUID platformId = UUID.randomUUID();
+        Platform platform = platform("Steam");
+        platform.setId(platformId);
+        when(platformRepository.retrieveOne(platformId)).thenReturn(platform);
 
         platformService.deleteOne(platformId);
 
         verify(platformRepository).deleteOne(platformId);
+        verify(inventoryEntityDeletedEventPublisher).platformDeleted(platformId, "Steam");
     }
 
     private static Platform platform(String name) {

@@ -18,6 +18,7 @@ public class StudioEntityModelMapper {
                 studio.getDescription(),
                 studio.getLocation(),
                 studio.getFirstParty(),
+                false,
                 new ArrayList<>()
         );
     }
@@ -32,6 +33,7 @@ public class StudioEntityModelMapper {
                 studioEntity.getGames() == null
                         ? List.of()
                         : studioEntity.getGames().stream()
+                                .filter(gameEntity -> !Boolean.TRUE.equals(gameEntity.getDeleted()))
                                 .map(gameEntity -> Game.builder()
                                         .id(gameEntity.getId())
                                         .name(gameEntity.getName())

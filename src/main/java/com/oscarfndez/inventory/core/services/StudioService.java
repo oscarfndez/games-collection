@@ -1,5 +1,6 @@
 package com.oscarfndez.inventory.core.services;
 
+import com.oscarfndez.inventory.core.events.InventoryEntityDeletedEventPublisher;
 import com.oscarfndez.inventory.core.model.Studio;
 import com.oscarfndez.inventory.ports.repositories.StudioRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class StudioService {
 
     private final StudioRepository studioRepository;
+    private final InventoryEntityDeletedEventPublisher inventoryEntityDeletedEventPublisher;
 
     @Cacheable(cacheNames = "studios", key = "#p0")
     public Studio retrieveOne(UUID id) {
@@ -69,7 +71,9 @@ public class StudioService {
             @CacheEvict(cacheNames = "gamePages", allEntries = true)
     })
     public void deleteOne(UUID id) {
+        Studio studio = studioRepository.retrieveOne(id);
         studioRepository.deleteOne(id);
+        inventoryEntityDeletedEventPublisher.studioDeleted(studio.getId(), studio.getName());
     }
 
     private String mapSortField(String sortField) {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class PlatformEntityModelMapper {
 
     public PlatformEntity modelToEntity(Platform platform) {
-        return new PlatformEntity(platform.getId(), platform.getName(), platform.getDescription(), platform.getImageUrl());
+        return new PlatformEntity(platform.getId(), platform.getName(), platform.getDescription(), platform.getImageUrl(), false);
     }
 
     public Platform entityToModel(PlatformEntity platformEntity) {

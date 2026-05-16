@@ -24,12 +24,14 @@ public class GameEntityModelMapper {
                 game.getName(),
                 game.getDescription(),
                 game.getImageUrl(),
+                false,
                 game.getStudio() == null ? null : new StudioEntity(
                         game.getStudio().getId(),
                         game.getStudio().getName(),
                         game.getStudio().getDescription(),
                         game.getStudio().getLocation(),
                         game.getStudio().getFirstParty(),
+                        false,
                         new ArrayList<>()
                 ),
                 game.getPlatforms().stream()
@@ -44,10 +46,11 @@ public class GameEntityModelMapper {
                 gameEntity.getName(),
                 gameEntity.getDescription(),
                 gameEntity.getPlatforms().stream()
+                        .filter(platformEntity -> !Boolean.TRUE.equals(platformEntity.getDeleted()))
                         .map(platformEntityModelMapper::entityToModel)
                         .toList(),
                 gameEntity.getImageUrl(),
-                gameEntity.getStudio() == null ? null : Studio.builder()
+                gameEntity.getStudio() == null || Boolean.TRUE.equals(gameEntity.getStudio().getDeleted()) ? null : Studio.builder()
                         .id(gameEntity.getStudio().getId())
                         .name(gameEntity.getStudio().getName())
                         .description(gameEntity.getStudio().getDescription())

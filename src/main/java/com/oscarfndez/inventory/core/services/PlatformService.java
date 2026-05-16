@@ -1,6 +1,7 @@
 package com.oscarfndez.inventory.core.services;
 
 
+import com.oscarfndez.inventory.core.events.InventoryEntityDeletedEventPublisher;
 import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,6 +24,7 @@ import lombok.AllArgsConstructor;
 public class PlatformService {
 
     private final PlatformRepository platformRepository;
+    private final InventoryEntityDeletedEventPublisher inventoryEntityDeletedEventPublisher;
 
     @Cacheable(cacheNames = "platforms", key = "#p0")
     public Platform retrieveOne(UUID id) {
@@ -105,6 +107,8 @@ public class PlatformService {
             @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     })
     public void deleteOne(UUID id) {
+        Platform platform = platformRepository.retrieveOne(id);
         platformRepository.deleteOne(id);
+        inventoryEntityDeletedEventPublisher.platformDeleted(platform.getId(), platform.getName());
     }
 }

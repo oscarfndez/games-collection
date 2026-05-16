@@ -1,5 +1,6 @@
 package com.oscarfndez.inventory.core.services;
 
+import com.oscarfndez.inventory.core.events.InventoryEntityDeletedEventPublisher;
 import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
 import com.oscarfndez.inventory.ports.repositories.PlatformRepository;
@@ -24,6 +25,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlatformRepository platformRepository;
     private final StudioRepository studioRepository;
+    private final InventoryEntityDeletedEventPublisher inventoryEntityDeletedEventPublisher;
 
     @Cacheable(cacheNames = "games", key = "#p0")
     public Game retrieveOne(UUID id) {
@@ -140,7 +142,9 @@ public class GameService {
             @CacheEvict(cacheNames = "collectionPages", allEntries = true)
     })
     public void deleteOne(UUID id) {
+        Game game = gameRepository.retrieveOne(id);
         gameRepository.deleteOne(id);
+        inventoryEntityDeletedEventPublisher.gameDeleted(game.getId(), game.getName());
     }
 
     private String mapSortField(String sortField) {

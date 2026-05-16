@@ -13,6 +13,7 @@ Spring Boot microservice responsible for the game inventory, platforms, studios,
 - Supports a many-to-many relationship between games and platforms.
 - Supports an optional studio association for games.
 - Consumes user lifecycle events from ActiveMQ.
+- Publishes inventory deletion events to ActiveMQ.
 - Deactivates a user's collection items when a user deletion event is received.
 - Provides OpenAPI/Swagger documentation.
 - Exposes Prometheus metrics through Spring Boot Actuator.
@@ -69,6 +70,8 @@ SPRING_ACTIVEMQ_USER=admin
 SPRING_ACTIVEMQ_PASSWORD=admin
 USER_EVENTS_TOPIC=games-collection.user-events
 USER_EVENTS_SUBSCRIPTION=inventory-service-user-events
+INVENTORY_EVENTS_TOPIC=games-collection.inventory-events
+INVENTORY_EVENTS_ENABLED=true
 JMS_CLIENT_ID=inventory-service
 JMS_LISTENER_AUTO_STARTUP=true
 LOGGING_LEVEL_ROOT=INFO
@@ -203,6 +206,34 @@ subscription: inventory-service-user-events
 ```
 
 The `afterDeleting` user event marks that user's collection items as inactive.
+
+## Published Events
+
+This service publishes inventory deletion events to ActiveMQ:
+
+```text
+topic: games-collection.inventory-events
+```
+
+Supported event types:
+
+```text
+game.deleted
+platform.deleted
+studio.deleted
+```
+
+Payload shape:
+
+```json
+{
+  "eventType": "game.deleted",
+  "entityType": "GAME",
+  "entityId": "00000000-0000-0000-0000-000000000000",
+  "entityName": "Elden Ring",
+  "occurredAt": "2026-05-15T12:00:00Z"
+}
+```
 
 ## Scripts
 

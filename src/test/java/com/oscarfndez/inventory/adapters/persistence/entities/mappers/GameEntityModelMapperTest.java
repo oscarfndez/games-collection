@@ -47,8 +47,8 @@ class GameEntityModelMapperTest {
     void entityToModelMapsGameAndPlatformFields() {
         UUID platformId = UUID.randomUUID();
         UUID gameId = UUID.randomUUID();
-        PlatformEntity platform = new PlatformEntity(platformId, "Nintendo Switch", "Console", "switch.png");
-        GameEntity entity = new GameEntity(gameId, "Zelda", "Adventure", "zelda.png", null, java.util.List.of(platform));
+        PlatformEntity platform = new PlatformEntity(platformId, "Nintendo Switch", "Console", "switch.png", false);
+        GameEntity entity = new GameEntity(gameId, "Zelda", "Adventure", "zelda.png", false, null, java.util.List.of(platform));
 
         Game game = mapper.entityToModel(entity);
 

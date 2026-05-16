@@ -9,8 +9,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class PlatformRepository {
 
     private final PlatformJpaRepository platformJpaRepository;
@@ -29,22 +30,20 @@ public class PlatformRepository {
     private EntityManager entityManager;
 
     public Platform retrieveOne(UUID id) {
-        try {
-            return platformEntityModelMapper.entityToModel(platformJpaRepository.getReferenceById(id));
-        } catch (JpaObjectRetrievalFailureException e) {
-            throw new ResourceNotFoundException();
-        }
+        return platformJpaRepository.findByIdAndDeletedFalse(id)
+                .map(platformEntityModelMapper::entityToModel)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public List<Platform> retrieveAny() {
-        return platformJpaRepository.findAll()
+        return platformJpaRepository.findAllByDeletedFalse()
                 .stream()
                 .map(platformEntityModelMapper::entityToModel)
                 .toList();
     }
 
     public List<Platform> retrieveMany(List<UUID> ids) {
-        List<Platform> platforms = platformJpaRepository.findAllById(ids)
+        List<Platform> platforms = platformJpaRepository.findAllByIdInAndDeletedFalse(ids)
                 .stream()
                 .map(platformEntityModelMapper::entityToModel)
                 .toList();
@@ -68,7 +67,9 @@ public class PlatformRepository {
     }
 
     public void deleteOne(UUID id) {
-        platformJpaRepository.deleteById(id);
+        if (platformJpaRepository.softDeleteById(id) == 0) {
+            throw new ResourceNotFoundException();
+        }
     }
 
     public Page<Platform> search(String search, Pageable pageable) {
@@ -82,6 +83,7 @@ public class PlatformRepository {
         String query = """
             select p
             from PlatformEntity p
+            where p.deleted = false
             """ + " order by " + sortField + " " + direction;
 
         return entityManager.createQuery(query, PlatformEntity.class)
@@ -97,8 +99,9 @@ public class PlatformRepository {
         String query = """
             select p
             from PlatformEntity p
-            where lower(p.name) like lower(concat('%', :search, '%'))
-               or lower(p.description) like lower(concat('%', :search, '%'))
+            where p.deleted = false
+              and (lower(p.name) like lower(concat('%', :search, '%'))
+               or lower(p.description) like lower(concat('%', :search, '%')))
             """ + " order by " + sortField + " " + direction;
 
         return entityManager.createQuery(query, PlatformEntity.class)

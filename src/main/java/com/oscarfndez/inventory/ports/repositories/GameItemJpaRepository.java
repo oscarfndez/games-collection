@@ -19,6 +19,8 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
         left join fetch g.platforms gp
         where gi.userId = :userId
           and gi.active = true
+          and g.deleted = false
+          and p.deleted = false
         order by g.name asc, p.name asc
     """)
     List<GameItemEntity> findByUserId(@Param("userId") UUID userId);
@@ -30,6 +32,8 @@ public interface GameItemJpaRepository extends JpaRepository<GameItemEntity, UUI
         join gi.platform p
         where gi.userId = :userId
           and gi.active = true
+          and g.deleted = false
+          and p.deleted = false
           and (:search is null or :search = ''
              or lower(g.name) like lower(concat('%', :search, '%'))
              or lower(g.description) like lower(concat('%', :search, '%'))

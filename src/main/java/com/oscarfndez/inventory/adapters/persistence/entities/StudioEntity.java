@@ -25,6 +25,7 @@ public class StudioEntity {
     private String description;
     private String location;
     private Boolean firstParty;
+    private Boolean deleted = false;
 
     @OneToMany(mappedBy = "studio")
     private List<GameEntity> games = new ArrayList<>();

@@ -2,12 +2,14 @@ package com.oscarfndez.inventory.ports.repositories;
 
 import com.oscarfndez.inventory.adapters.persistence.entities.GameEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
@@ -17,10 +19,13 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
         from GameEntity g
         join g.platforms p
         left join g.studio s
-        where lower(g.name) like lower(concat('%', :search, '%'))
+        where g.deleted = false
+          and p.deleted = false
+          and (s is null or s.deleted = false)
+          and (lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
            or lower(p.name) like lower(concat('%', :search, '%'))
-           or lower(s.name) like lower(concat('%', :search, '%'))
+           or lower(s.name) like lower(concat('%', :search, '%')))
     """)
     List<GameEntity> search(@Param("search") String search);
 
@@ -29,7 +34,10 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
         from GameEntity g
         join g.platforms p
         left join g.studio s
-        where (:search is null or :search = ''
+        where g.deleted = false
+          and p.deleted = false
+          and (s is null or s.deleted = false)
+          and (:search is null or :search = ''
            or lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
            or lower(p.name) like lower(concat('%', :search, '%'))
@@ -43,6 +51,9 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
         join g.platforms p
         left join g.studio s
         where p.id = :platformId
+          and g.deleted = false
+          and p.deleted = false
+          and (s is null or s.deleted = false)
           and (:search is null or :search = ''
            or lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
@@ -59,6 +70,9 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
         from GameEntity g
         join g.platforms p
         where g.studio.id = :studioId
+          and g.deleted = false
+          and p.deleted = false
+          and g.studio.deleted = false
           and (:search is null or :search = ''
            or lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
@@ -69,4 +83,17 @@ public interface GameJpaRepository extends JpaRepository<GameEntity, UUID> {
             @Param("search") String search,
             Pageable pageable
     );
+
+    Optional<GameEntity> findByIdAndDeletedFalse(UUID id);
+
+    List<GameEntity> findAllByDeletedFalse();
+
+    @Modifying
+    @Query("""
+        update GameEntity g
+        set g.deleted = true
+        where g.id = :id
+          and g.deleted = false
+    """)
+    int softDeleteById(@Param("id") UUID id);
 }

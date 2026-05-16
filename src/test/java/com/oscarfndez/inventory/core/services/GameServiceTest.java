@@ -1,5 +1,6 @@
 package com.oscarfndez.inventory.core.services;
 
+import com.oscarfndez.inventory.core.events.InventoryEntityDeletedEventPublisher;
 import com.oscarfndez.inventory.core.model.Game;
 import com.oscarfndez.inventory.core.model.Platform;
 import com.oscarfndez.inventory.ports.repositories.GameRepository;
@@ -36,6 +37,9 @@ class GameServiceTest {
 
     @Mock
     private StudioRepository studioRepository;
+
+    @Mock
+    private InventoryEntityDeletedEventPublisher inventoryEntityDeletedEventPublisher;
 
     @InjectMocks
     private GameService gameService;
@@ -115,10 +119,14 @@ class GameServiceTest {
     @Test
     void deleteOneDelegatesToRepository() {
         UUID gameId = UUID.randomUUID();
+        Game game = game("Zelda", platform());
+        game.setId(gameId);
+        when(gameRepository.retrieveOne(gameId)).thenReturn(game);
 
         gameService.deleteOne(gameId);
 
         verify(gameRepository).deleteOne(gameId);
+        verify(inventoryEntityDeletedEventPublisher).gameDeleted(gameId, "Zelda");
     }
 
     private static Game game(String name, Platform platform) {

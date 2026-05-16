@@ -9,7 +9,6 @@ import com.oscarfndez.inventory.core.model.Game;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,15 +30,13 @@ public class GameRepository {
     private final GameEntityModelMapper gameEntityModelMapper;
 
     public Game retrieveOne(UUID id) {
-        try {
-            return gameEntityModelMapper.entityToModel(gameJpaRepository.getReferenceById(id));
-        } catch (JpaObjectRetrievalFailureException e) {
-            throw new ResourceNotFoundException();
-        }
+        return gameJpaRepository.findByIdAndDeletedFalse(id)
+                .map(gameEntityModelMapper::entityToModel)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     public List<Game> retrieveAny() {
-        return gameJpaRepository.findAll()
+        return gameJpaRepository.findAllByDeletedFalse()
                 .stream()
                 .map(gameEntityModelMapper::entityToModel)
                 .toList();
@@ -60,7 +57,9 @@ public class GameRepository {
     }
 
     public void deleteOne(UUID id) {
-        gameJpaRepository.deleteById(id);
+        if (gameJpaRepository.softDeleteById(id) == 0) {
+            throw new ResourceNotFoundException();
+        }
     }
 
     public List<Game> search(String search) {
@@ -96,6 +95,8 @@ public class GameRepository {
         select distinct g
         from GameEntity g
         join g.platforms p
+        where g.deleted = false
+          and p.deleted = false
         """ + " order by " + querySortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)
@@ -114,9 +115,11 @@ public class GameRepository {
         select distinct g
         from GameEntity g
         join g.platforms p
-        where lower(g.name) like lower(concat('%', :search, '%'))
+        where g.deleted = false
+          and p.deleted = false
+          and (lower(g.name) like lower(concat('%', :search, '%'))
            or lower(g.description) like lower(concat('%', :search, '%'))
-           or lower(p.name) like lower(concat('%', :search, '%'))
+           or lower(p.name) like lower(concat('%', :search, '%')))
         """ + " order by " + querySortField + " " + direction;
 
         return entityManager.createQuery(query, GameEntity.class)

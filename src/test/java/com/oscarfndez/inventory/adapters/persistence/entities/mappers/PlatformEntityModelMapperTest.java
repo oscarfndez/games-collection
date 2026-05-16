@@ -33,7 +33,7 @@ class PlatformEntityModelMapperTest {
     @Test
     void entityToModelMapsFields() {
         UUID platformId = UUID.randomUUID();
-        PlatformEntity entity = new PlatformEntity(platformId, "Steam", "Store", "steam.png");
+        PlatformEntity entity = new PlatformEntity(platformId, "Steam", "Store", "steam.png", false);
 
         Platform platform = mapper.entityToModel(entity);
 
